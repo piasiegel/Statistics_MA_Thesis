@@ -1,0 +1,105 @@
+---
+title: "Behavioral analysis"
+author: "Sandra Martin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+```{r setup, include=FALSE, echo=FALSE}
+rm(list= ls()) # clear all 
+knitr::opts_chunk$set()
+options(scipen = 999)
+```
+
+# Load packages
+```{r packages, message=FALSE, warning=TRUE}
+library(here)
+library(plyr)
+library(tidyverse)
+library(ggplot2)
+library(lme4)
+library(emmeans)
+library(ggeffects)
+library(stringr)
+library(fitdistrplus)
+library(see)
+```
+
+
+```{r Theme for plots, include=FALSE}
+apatheme <- theme_bw()+
+  theme(plot.title = element_blank(), panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+        panel.border=element_blank(),axis.line=element_line(),
+        text=element_text(family='sans',size=18)) #panel.grid.major=element_blank(),
+
+today <- Sys.Date()
+today <- format(today, format="%y%m%d")
+
+palet_cond <- c("#DC964F","gray65","#4477AA")
+palet_cond2 <- c("#DC964F","#009E73","#4477AA")
+palet_task <- c("#BBBBBB","#994455")
+
+output_path = "/Users/sandramartin/ownCloud/MDN_APH/Results/"
+
+# creating a function for std.error
+std.error <- function(x, na.rm = TRUE){sd(x, na.rm = TRUE)/sqrt(length(x[!is.na(x)]))}
+```
+
+# Load data
+```{r Load R data}
+# full df including all sessions
+#load(here::here("Behavioral/df_behav_06_2022.RData"))
+load(here::here('Behavioral/df_behav_07_2023_wEdu.RData'))
+
+# df only with TMS sessions
+#load(here::here("Behavioral/df_TMS_06_2022.RData"))
+load(here::here('Behavioral/df_TMS_07_2023_wEdu.RData'))
+```
+
+```{r Read in data, message=FALSE, include=FALSE, eval=FALSE}
+# Read in data
+path = here::here("Behavioral/Raw_data/")
+
+all_files <- ""
+seeds <- list.files(path = path, pattern = "MDN_APH_")
+
+for (i in 1:length(seeds)) {
+  filedir <- seeds[i]
+  seed <- read.table(paste0(path, "/", filedir), skip = 7, header = T, sep = "\t", na.strings = "NaN")
+  infos <- read.table(paste0(path, "/", filedir), fill = T)
+  seed$sub <- infos$V2[infos$V1 == "Participant:"]
+  seed$session <- infos$V2[infos$V1 == "Session:"]
+  seed$run <- infos$V2[infos$V1 == "Run:"]
+  seed$buttons <- infos$V2[infos$V1 == "Buttons:"]
+  all_files <- rbind(all_files, seed)
+}
+
+
+all_files <- all_files[-1,]     # delete first row of df since it's only NAs
+all_files$time_audio <- as.numeric(all_files$time_audio)
+all_files$length_audio <- as.numeric(all_files$length_audio)
+all_files$time_picture <- as.numeric(all_files$time_picture)
+all_files$response_time <- as.numeric(all_files$response_time)
+all_files <- rename(all_files, absolute_response_time = relative_response_time)
+all_files$absolute_response_time <- as.numeric(all_files$absolute_response_time)
+all_files$time_ISI <- as.numeric(all_files$time_ISI)
+all_files$sub <- str_pad(all_files$sub, 3, "left", "0")
+all_files$sub <- as.factor(all_files$sub)
+all_files$session <- as.factor(all_files$session)
+all_files$run <- as.factor(all_files$run)
+all_files$button_response <- as.factor(all_files$button_response)
+all_files$accuracy <- as.factor(all_files$accuracy)
+all_files$condition <- as.factor(all_files$condition)
+all_files$congruency <- all_files$correctness
+all_files$congruency[all_files$congruency == "correct"] <- "congruent"
+all_files$congruency[all_files$congruency == "incorrect"] <- "incongruent"
+all_files$congruency <- as.factor(all_files$congruency)
+all_files$correctness <- NULL
+all_files$category <- as.factor(all_files$category)
+all_files$buttons <- as.factor(all_files$buttons)
+all_files <- all_files[, c(15, 16, 17, 1:10, 19, 11:14, 18)]
+
+save(all_files, file = 'Behavioral/all_files_06_2022.RData')
+
+```
