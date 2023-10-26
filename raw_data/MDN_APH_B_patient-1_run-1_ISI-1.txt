@@ -5,7 +5,7 @@ Date: 10/12/2021 16:02:30
 Run: 1
 Buttons: 1/2
 
-stimulus_audio	time_audio	length_audio	stimulus_picture	time_picture	response_time	relative_response_time	button_response	accuracy	condition	correctness	category	occurence_pic	repeat_pic	repeat_category	ISI	time_ISI
+stimulus_audio	time_audio	length_audio	stimulus_picture	time_picture	response_time	absolute_response_time	button_response	accuracy	condition	correctness	category	occurence_pic	repeat_pic	repeat_category	ISI	time_ISI
 schlafanzug_word	36292	940	Pullover	37239	39726	2487	2	incorrect	WPM	incorrect	Kleidung	1	29	3	700	39805
 saege_incorrect	40588	1240	Saege	41838	43165	1326	1	correct	FPM	incorrect	Werkzeug	1	120	21	1200	44104
 schrank_word	45454	1210	Sessel	46670	47868	877	1	correct	WPM	incorrect	Moebel	1	97	6	900	48969

@@ -1,10 +1,10 @@
-MDN_APH_B
-
-Subject:	50
-Date: 05/04/2023 11:48:30
-Run: 2
-Buttons: 1/2
-
+MDN_APH_B																
+																
+Subject:	50															
+Date: 05/04/2023 11:48:30																
+Run: 2																
+Buttons: 1/2																
+																
 stimulus_audio	time_audio	length_audio	stimulus_picture	time_picture	response_time	absolute_response_time	button_response	accuracy	condition	congruency	category	occurence_pic	repeat_pic	repeat_category	ISI	time_ISI
 schlitten_correct	14598	1170	Schlitten	15779	16677	898	1	incorrect	FPM	correct	Fortbewegungsmittel	1	159	16	1200	18111
 kleid_incorrect	19344	1290	Kleid	20644	21554	909	1	correct	FPM	incorrect	Kleidung	1	181	11	900	22860
@@ -163,7 +163,7 @@ axt_incorrect	751135	1170	Axt	752318	753428	1109	2	incorrect	FPM	incorrect	Werkz
 sellerie_word	755384	1110	Weisskohl	756500	757591	1091	2	incorrect	WPM	incorrect	Gemuese	2		35	900	758900
 traktor_correct	759850	1050	Traktor	760916	762257	1341	1	incorrect	FPM	correct	Fortbewegungsmittel	2		1	1200	763365
 kutsche_correct	764931	940	Kutsche	765881	767267	1385	2	correct	FPM	correct	Fortbewegungsmittel	1	32	3	900	768447
-ziege_incorrect	769397	1000	Ziege	770413	771498	1084	1	correct	FPM	incorrect	Saeugetiere	2		#NV	1200	772912
+ziege_incorrect	769397	1000	Ziege	770413	771498	1084	1	correct	FPM	incorrect	Saeugetiere	2			1200	772912
 kokosnuss_word	774145	1510	Weintraube	775662	776323	661	2	incorrect	WPM	incorrect	Fruechte	2			1200	777661
 taxi_word	778894	1230	Schlitten	780127	781071	943	1	correct	WPM	incorrect	Fortbewegungsmittel	2		13	700	782410
 kiwi_word	783143	1190	Kiwi	784342	785683	1340	2	correct	WPM	correct	Fruechte	2		9	1200	786658

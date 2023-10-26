@@ -5,7 +5,7 @@ Date: 10/12/2021 16:25:32
 Run: 2
 Buttons: 1/2
 
-stimulus_audio	time_audio	length_audio	stimulus_picture	time_picture	response_time	relative_response_time	button_response	accuracy	condition	correctness	category	occurence_pic	repeat_pic	repeat_category	ISI	time_ISI
+stimulus_audio	time_audio	length_audio	stimulus_picture	time_picture	response_time	absolute_response_time	button_response	accuracy	condition	correctness	category	occurence_pic	repeat_pic	repeat_category	ISI	time_ISI
 faehre_incorrect	12282	1040	Faehre	13329	14312	982	1	correct	FPM	incorrect	Fortbewegungsmittel	1	36	5	1200	15795
 mais_word	17028	1130	Spargel	18161	18839	678	1	correct	WPM	incorrect	Gemuese	1	28	5	700	20544
 bluse_word	21277	1110	Bluse	22393	23165	771	2	correct	WPM	correct	Kleidung	1	47	7	700	24793

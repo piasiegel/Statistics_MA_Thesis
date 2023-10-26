@@ -59,7 +59,7 @@ load(here::here('Behavioral/df_TMS_07_2023_wEdu.RData'))
 
 ```{r Read in data, message=FALSE, include=FALSE, eval=FALSE}
 # Read in data
-path = here::here("Behavioral/Raw_data/")
+path = here::here("raw_data/")
 
 all_files <- ""
 seeds <- list.files(path = path, pattern = "MDN_APH_")
@@ -67,9 +67,12 @@ seeds <- list.files(path = path, pattern = "MDN_APH_")
 for (i in 1:length(seeds)) {
   filedir <- seeds[i]
   seed <- read.table(paste0(path, "/", filedir), skip = 7, header = T, sep = "\t", na.strings = "NaN")
+  if ("correctness" %in% colnames(seed)) {
+  seed <- seed %>% 
+    rename(congruency = correctness)
+  }
   infos <- read.table(paste0(path, "/", filedir), fill = T)
-  seed$sub <- infos$V2[infos$V1 == "Participant:"]
-  seed$session <- infos$V2[infos$V1 == "Session:"]
+  seed$sub <- infos$V2[infos$V1 == "Subject:"]
   seed$run <- infos$V2[infos$V1 == "Run:"]
   seed$buttons <- infos$V2[infos$V1 == "Buttons:"]
   all_files <- rbind(all_files, seed)
@@ -81,25 +84,24 @@ all_files$time_audio <- as.numeric(all_files$time_audio)
 all_files$length_audio <- as.numeric(all_files$length_audio)
 all_files$time_picture <- as.numeric(all_files$time_picture)
 all_files$response_time <- as.numeric(all_files$response_time)
-all_files <- rename(all_files, absolute_response_time = relative_response_time)
-all_files$absolute_response_time <- as.numeric(all_files$absolute_response_time)
+all_files <- rename(all_files, 
+                    response_time_absolute = response_time,
+                    response_time = absolute_response_time)
+all_files$response_time_absolute <- as.numeric(all_files$response_time_absolute)
 all_files$time_ISI <- as.numeric(all_files$time_ISI)
 all_files$sub <- str_pad(all_files$sub, 3, "left", "0")
 all_files$sub <- as.factor(all_files$sub)
-all_files$session <- as.factor(all_files$session)
 all_files$run <- as.factor(all_files$run)
 all_files$button_response <- as.factor(all_files$button_response)
 all_files$accuracy <- as.factor(all_files$accuracy)
 all_files$condition <- as.factor(all_files$condition)
-all_files$congruency <- all_files$correctness
 all_files$congruency[all_files$congruency == "correct"] <- "congruent"
 all_files$congruency[all_files$congruency == "incorrect"] <- "incongruent"
 all_files$congruency <- as.factor(all_files$congruency)
-all_files$correctness <- NULL
 all_files$category <- as.factor(all_files$category)
 all_files$buttons <- as.factor(all_files$buttons)
-all_files <- all_files[, c(15, 16, 17, 1:10, 19, 11:14, 18)]
+all_files <- all_files[, c(18, 19, 10, 11, 1:9, 12:17, 20)]
 
-save(all_files, file = 'Behavioral/all_files_06_2022.RData')
+save(all_files, file = 'RData/all_files_10_2023.RData')
 
 ```
