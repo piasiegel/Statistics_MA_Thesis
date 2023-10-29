@@ -2,7 +2,10 @@
 title: "Behavioral analysis"
 author: "Sandra Martin"
 date: "`r Sys.Date()`"
-output: html_document
+output: html_document:
+  toc: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -40,7 +43,7 @@ palet_cond <- c("#DC964F","gray65","#4477AA")
 palet_cond2 <- c("#DC964F","#009E73","#4477AA")
 palet_task <- c("#BBBBBB","#994455")
 
-output_path = "/Users/sandramartin/ownCloud/MDN_APH/Results/"
+output_path = here::here("Plots/")
 
 # creating a function for std.error
 std.error <- function(x, na.rm = TRUE){sd(x, na.rm = TRUE)/sqrt(length(x[!is.na(x)]))}
@@ -88,6 +91,7 @@ all_files <- rename(all_files,
                     response_time_absolute = response_time,
                     response_time = absolute_response_time)
 all_files$response_time_absolute <- as.numeric(all_files$response_time_absolute)
+all_files$response_time <- as.numeric(all_files$response_time)
 all_files$time_ISI <- as.numeric(all_files$time_ISI)
 all_files$sub <- str_pad(all_files$sub, 3, "left", "0")
 all_files$sub <- as.factor(all_files$sub)
@@ -103,5 +107,98 @@ all_files$buttons <- as.factor(all_files$buttons)
 all_files <- all_files[, c(18, 19, 10, 11, 1:9, 12:17, 20)]
 
 save(all_files, file = 'RData/all_files_10_2023.RData')
+
+
+## Count NA values
+df_na <- all_files %>% 
+  group_by(sub, run, condition) %>% 
+  summarise(n_trials = n(), n_na = sum(is.na(response_time) == TRUE), prop = sum(is.na(response_time) == TRUE)/n())
+
+
+## Count errors
+df_err <- all_files %>% 
+  group_by(sub, run, condition) %>% 
+  summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
+```
+
+# Prepare df for reaction time analysis
+```{r}
+# remove NA values
+df_behav <- all_files[!is.na(all_files$response_time),]
+
+# remove incorrect answers
+df_RT <- df_behav[df_behav$accuracy != "incorrect", ]
+
+# remove RTs before picture was shown (equals rt = 0)
+df_RT <- df_RT[!(df_RT$response_time_absolute < df_RT$time_picture),]
+```
+
+## Plots
+```{r}
+# relevel factors
+df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
+
+# Create summary df for RT data incl baseline
+summary_rt_full <- df_RT %>% group_by(condition) %>% 
+  summarise(mean_rt = mean(response_time, na.rm = TRUE), 
+            md_rt = median(response_time, na.rm = TRUE),
+            SD_rt = sd(response_time, na.rm = TRUE), 
+            var_rt = var(response_time, na.rm = TRUE),
+            std.error_rt = std.error(response_time, na.rm = TRUE))
+
+# Plot by Task
+RT_cond <- ggplot(df_RT, aes(x = condition, y = response_time, fill = condition)) + 
+  geom_violinhalf(aes(fill = condition), position = position_nudge(x = .2, y = 0), adjust = 1.5, trim = FALSE, alpha = .6, colour = NA) +
+  geom_boxplot(alpha = 1, width = .3, colour = "black", outlier.shape = NA, position = position_dodge(width = 0.4)) +
+  geom_point(data=summary_rt_full, aes(x = condition, y = mean_rt, group = condition, colour = condition), shape=18, position = position_nudge(x = .2, y = 0)) +
+  geom_errorbar(data=summary_rt_full, aes(x = condition, y = mean_rt, group = condition, colour = condition, ymin = mean_rt - std.error_rt, ymax = mean_rt + std.error_rt), width = .05, position = position_nudge(x = .2, y = 0)) +
+  scale_colour_manual(values =palet_task, labels = c("WPM", "FPM")) + 
+  scale_fill_manual(values = palet_task, labels = c("WPM", "FPM")) +
+  #scale_x_discrete(labels = c("Baseline", "Active", "Sham")) +
+  #coord_cartesian(ylim = c(0, 3500)) +
+  labs(y = "Reaction time in ms") +
+  apatheme +
+  theme(legend.position=("none"), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=12),
+        axis.title.x = element_blank())
+#  facet_wrap(~ congruency)
+RT_cond
+```
+
+## Mixed-effects regression
+### Describe distribution of RT and check if log-transformation is good
+```{r Describe distribution of RT}
+descdist(df_RT$response_time)
+descdist(log(df_RT$response_time)) # log-transform leads to perfect normal dist
+```
+
+### Model including baseline session
+Based on our a priori hypotheses, we included fixed effects for session and condition. 
+```{r RT - Model including baseline session}
+# relevel factors
+df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
+df_RT$congruency <- factor(df_RT$congruency, levels = c("congruent", "incongruent"))
+df_RT$age_z <- scale(df_RT$age, scale = F)
+
+# Simple coding
+
+# create a Simple Coding scheme
+# https://stats.oarc.ucla.edu/r/library/r-library-contrast-coding-systems-for-categorical-variables/
+# creating the contrast matrix manually by modifying the dummy coding scheme
+c <- contr.treatment(2)
+my.coding <- matrix(rep(1/2, 2), ncol = 1) 
+my.simple <- c-my.coding
+
+#assign the new coding scheme
+contrasts(df_RT$condition) <- my.simple
+contrasts(df_RT$congruency) <- my.simple
+
+m_RT2 <- lmer(log(response_time) ~ condition * congruency + run + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F)
+summary(m_RT2)
+
+drop1(m_RT1, test = "Chisq")
+
+plot(ggeffect(m_RT1, terms = c("condition", "congruency")))
 
 ```
