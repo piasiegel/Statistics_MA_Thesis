@@ -1,0 +1,200 @@
+MDN_APH_B
+
+Subject:	38
+Date: 08/18/2022 11:13:17
+Run: 2
+Buttons: 1/2
+
+stimulus_audio	time_audio	length_audio	stimulus_picture	time_picture	response_time	absolute_response_time	button_response	accuracy	condition	congruency	category	occurence_pic	repeat_pic	repeat_category	ISI	time_ISI
+fuchs_incorrect	9167	1360	Fuchs	10530	11642	1111	1	correct	FPM	incorrect	Saeugetiere	1	178	3	700	12679
+mantel_word	13413	1020	Handschuh	14446	14988	542	1	correct	WPM	incorrect	Kleidung	1	100	6	700	16928
+traktor_word	17661	1320	Schiff	18994	19469	474	1	correct	WPM	incorrect	Fortbewegungsmittel	1	129	13	1200	21177
+eichhoernchen_word	22410	1430	Eichhoernchen	23860	24357	497	2	correct	WPM	correct	Saeugetiere	1	152	2	1200	25926
+elster_incorrect	27475	1220	Elster	28708	29440	731	1	correct	FPM	incorrect	Voegel	1	170	17	1200	30991
+kamel_correct	32291	960	Kamel	33257	33961	703	2	correct	FPM	correct	Saeugetiere	1	93	3	1200	35806
+zwiebel_incorrect	37056	1290	Zwiebel	38355	39543	1187	1	correct	FPM	incorrect	Gemuese	1	59	10	900	40572
+jeans_word	41505	1280	Jeans	42804	43223	419	2	correct	WPM	correct	Kleidung	1	143	11	900	45020
+tiger_word	45953	1210	Bueffel	47170	47674	504	1	correct	WPM	incorrect	Saeugetiere	1	22	3	900	49469
+drehstuhl_incorrect	50469	1030	Drehstuhl	51502	53077	1575	1	correct	FPM	incorrect	Moebel	1	124	15	700	53984
+zitrone_word	54718	1400	Zitrone	56134	56550	416	2	correct	WPM	correct	Fruechte	1	101	2	1200	58233
+lama_correct	59799	950	Lama	60766	62368	1602	1	incorrect	FPM	correct	Saeugetiere	1	171	3	900	63315
+dattel_correct	64315	1280	Dattel	65614	66824	1209	2	correct	FPM	correct	Fruechte	1	134	1	1200	67830
+kokosnuss_word	69064	1510	Weintraube	70580	71605	1024	1	correct	WPM	incorrect	Fruechte	1	127	9	700	72579
+ziege_incorrect	73379	1000	Ziege	74395	75171	775	1	correct	FPM	incorrect	Saeugetiere	1	142	16	1200	76895
+fahrrad_incorrect	78194	990	Fahrrad	79194	80069	875	2	incorrect	FPM	incorrect	Fortbewegungsmittel	1	103	2	900	81710
+brokkoli_correct	82710	1110	Brokkoli	83826	85089	1263	2	correct	FPM	correct	Gemuese	1	101	7	1200	86225
+zug_word	87458	960	Zug	88425	89007	582	2	correct	WPM	correct	Fortbewegungsmittel	1	174	2	700	90974
+kleid_incorrect	92040	1290	Kleid	93340	94151	811	1	correct	FPM	incorrect	Kleidung	1	107	2	900	95556
+schiff_word	96506	1040	Traktor	97555	98287	732	1	correct	WPM	incorrect	Fortbewegungsmittel	1	44	7	700	100021
+bluse_correct	101088	1020	Bluse	102121	102977	856	2	correct	FPM	correct	Kleidung	1	16	14	900	104603
+moewe_correct	105620	1090	Moewe	106719	107314	594	2	correct	FPM	correct	Voegel	1	139	4	900	109135
+aprikose_word	110068	1440	Aprikose	111518	112105	586	2	correct	WPM	correct	Fruechte	1	37	10	900	113584
+weisskohl_correct	114534	1080	Weisskohl	115617	117168	1551	1	incorrect	FPM	correct	Gemuese	1	41	4	3000	118049
+truhe_word	126081	1190	Truhe	127280	128582	1302	2	correct	WPM	correct	Moebel	1	106	23	700	129596
+wellensittich_incorrect	130663	1020	Wellensittich	131696	132338	642	1	correct	FPM	incorrect	Voegel	1	159	13	1200	134178
+flugzeug_word	135411	1410	Flugzeug	136827	137380	553	2	correct	WPM	correct	Fortbewegungsmittel	1	144	7	700	138927
+spargel_word	139660	1100	Spargel	140776	142279	1503	2	correct	WPM	correct	Gemuese	1	8	1	900	143176
+weisskohl_word	144109	1160	Sellerie	145275	145935	660	1	correct	WPM	incorrect	Gemuese	1	72	7	1200	147624
+feile_incorrect	148907	870	Feile	149790	150856	1065	1	correct	FPM	incorrect	Werkzeug	1	133	2	1200	152423
+bueffel_correct	153673	1410	Bueffel	155089	156060	971	2	correct	FPM	correct	Saeugetiere	2		21	1200	157188
+meissel_correct	158755	1170	Meissel	159938	160949	1011	2	correct	FPM	correct	Werkzeug	1	21	11	900	162270
+orange_word	163203	1230	Orange	164436	164917	480	2	correct	WPM	correct	Fruechte	1	131	7	700	166719
+taxi_word	167452	1230	Schlitten	168702	169308	606	1	correct	WPM	incorrect	Fortbewegungsmittel	1	150	4	700	170968
+hemd_word	171701	1110	Hemd	172817	173724	906	2	correct	WPM	correct	Kleidung	1	79	2	700	175216
+spargel_incorrect	176300	930	Spargel	177233	178729	1496	1	correct	FPM	incorrect	Gemuese	2		14	900	179815
+hose_word	180748	1240	Bluse	181998	182556	557	1	correct	WPM	incorrect	Kleidung	2		5	1200	184264
+kutsche_word	185497	1210	Faehre	186713	187538	824	1	correct	WPM	incorrect	Fortbewegungsmittel	1	129	26	900	189013
+adler_incorrect	190012	1210	Adler	191229	192457	1228	2	incorrect	FPM	incorrect	Voegel	1	34	5	700	193528
+birne_correct	194328	1310	Birne	195644	197107	1463	2	correct	FPM	correct	Fruechte	1	68	1	700	197843
+banane_word	198577	1320	Banane	199909	200515	605	2	correct	WPM	correct	Fruechte	1	4	4	900	202092
+hut_word	203025	1120	Hut	204158	204792	634	2	correct	WPM	correct	Kleidung	1	97	7	1200	206541
+schleifpapier_word	207774	1400	Schraubenzieher	209190	209980	789	1	correct	WPM	incorrect	Werkzeug	1	107	4	900	211290
+meise_correct	212556	1190	Meise	213756	215685	1929	1	incorrect	FPM	correct	Voegel	1	40	2	700	216072
+banane_incorrect	216871	890	Banane	217771	NaN	NaN	NaN	NaN	FPM	incorrect	Fruechte	2		14	900	220387
+reiher_word	221320	1180	Reiher	222503	223079	576	1	incorrect	WPM	correct	Voegel	1	42	8	900	224836
+walze_word	225769	1300	Sichel	227085	227695	610	2	incorrect	WPM	incorrect	Werkzeug	1	35	6	700	229284
+schrank_word	230018	1150	Sessel	231184	231794	609	1	correct	WPM	incorrect	Moebel	1	89	3	3000	233533
+pullover_correct	241898	1320	Pullover	243230	244473	1242	1	incorrect	FPM	correct	Kleidung	1	41	7	900	245413
+avocado_incorrect	246413	940	Avocado	247363	248649	1286	2	incorrect	FPM	incorrect	Gemuese	1	24	15	1200	249929
+sofa_incorrect	251228	1220	Sofa	252461	253716	1254	1	correct	FPM	incorrect	Moebel	1	107	17	900	254744
+biber_correct	255744	1240	Biber	256993	257781	787	1	incorrect	FPM	correct	Saeugetiere	1	3	3	700	259259
+hobel_word	259992	1190	Meissel	261192	262672	1479	2	incorrect	WPM	incorrect	Werkzeug	2		4	1200	263508
+gans_word	264741	1110	Gans	265857	266432	574	1	incorrect	WPM	correct	Voegel	1	73	7	1200	268257
+kamel_word	269490	1190	Biber	270689	271632	942	2	incorrect	WPM	incorrect	Saeugetiere	2		3	700	273005
+schal_word	273738	1040	Schal	274788	275460	671	1	incorrect	WPM	correct	Kleidung	1	25	14	1200	277254
+saege_incorrect	278504	1180	Saege	279687	280436	749	2	incorrect	FPM	incorrect	Werkzeug	1	133	5	1200	282019
+wal_word	283252	1100	Wal	284369	284885	515	1	incorrect	WPM	correct	Saeugetiere	1	115	20	1200	286768
+birne_word	288001	1160	Blaubeere	289167	289948	780	2	incorrect	WPM	incorrect	Fruechte	1	27	1	1200	291517
+aprikose_incorrect	292816	1300	Aprikose	294133	295329	1196	1	correct	FPM	incorrect	Fruechte	2		12	1200	296332
+geier_correct	297632	1380	Geier	299031	300254	1223	1	incorrect	FPM	correct	Voegel	1	98	12	1200	301147
+maurerkelle_incorrect	302430	820	Maurerkelle	303263	304463	1199	2	incorrect	FPM	incorrect	Werkzeug	1	60	1	900	305946
+bohrmaschine_incorrect	306929	1030	Bohrmaschine	307962	309657	1694	1	correct	FPM	incorrect	Werkzeug	1	70	4	700	310445
+traktor_correct	311228	1050	Traktor	312294	312939	644	1	incorrect	FPM	correct	Fortbewegungsmittel	2		34	900	314743
+sellerie_word	315677	1110	Weisskohl	316793	317869	1076	2	incorrect	WPM	incorrect	Gemuese	2		1	700	319192
+zwiebel_word	319925	1250	Zwiebel	321192	321724	532	1	incorrect	WPM	correct	Gemuese	2		3	1200	323441
+walze_correct	324757	1170	Walze	325940	327040	1100	2	correct	FPM	correct	Werkzeug	1	105	10	900	328273
+regal_correct	329256	980	Regal	330239	330987	747	2	correct	FPM	correct	Moebel	1	8	7	1200	332772
+radieschen_correct	334071	1440	Radieschen	335521	336899	1377	2	correct	FPM	correct	Gemuese	1	48	2	700	337587
+bluse_word	338320	1340	Hose	339670	340223	553	2	incorrect	WPM	incorrect	Kleidung	1	65	11	900	341836
+brokkoli_word	342769	1100	Kohlrabi	343885	344687	802	1	correct	WPM	incorrect	Gemuese	1	14	3	1200	346284
+ananas_correct	347567	1310	Ananas	348884	350418	1534	1	incorrect	FPM	correct	Fruechte	1	49	14	3000	351083
+adler_word	359114	1210	Adler	360330	360745	414	1	incorrect	WPM	correct	Voegel	2		11	700	362630
+avocado_word	363363	1440	Avocado	364812	365383	570	2	correct	WPM	correct	Gemuese	2		11	1200	366879
+schrank_correct	368195	1040	Schrank	369245	369961	715	2	correct	FPM	correct	Moebel	1	101	1	1200	371710
+hocker_word	372944	1110	Regal	374060	374685	625	2	incorrect	WPM	incorrect	Moebel	2		4	700	376459
+axt_word	377192	1140	Axt	378342	379035	693	1	incorrect	WPM	correct	Werkzeug	1	63	5	1200	380708
+bueffel_word	381941	1150	Tiger	383107	383589	481	2	incorrect	WPM	incorrect	Saeugetiere	1	45	1	900	385457
+seehund_incorrect	386456	990	Seehund	387456	388804	1348	1	correct	FPM	incorrect	Saeugetiere	1	8	4	1200	389972
+tisch_incorrect	391272	1110	Tisch	392388	393452	1064	2	incorrect	FPM	incorrect	Moebel	1	69	13	1200	394787
+schal_incorrect	396087	1360	Schal	397453	398732	1279	1	correct	FPM	incorrect	Kleidung	2		8	700	399603
+sichel_correct	400419	1230	Sichel	401652	402662	1010	1	incorrect	FPM	correct	Werkzeug	2		14	700	403935
+lama_word	404668	1240	Baer	405917	406328	410	2	incorrect	WPM	incorrect	Saeugetiere	1	98	4	700	408183
+moewe_word	408917	1240	Meise	410166	410844	677	1	correct	WPM	incorrect	Voegel	2		4	1200	412432
+kohlrabi_correct	413999	1250	Kohlrabi	415265	416562	1297	1	incorrect	FPM	correct	Gemuese	2		10	900	417514
+blaubeere_correct	418514	1510	Blaubeere	420030	420990	959	2	correct	FPM	correct	Fruechte	2		8	900	422029
+seehund_word	422963	1380	Seehund	424362	424844	482	2	correct	WPM	correct	Saeugetiere	2		10	1200	426478
+reiher_incorrect	427761	1110	Reiher	428878	430578	1700	2	incorrect	FPM	incorrect	Voegel	2		3	900	431277
+mantel_correct	432260	1130	Mantel	433393	435148	1755	2	correct	FPM	correct	Kleidung	1	11	1	1200	435776
+schlafanzug_word	437009	1530	Pullover	438558	439176	617	1	correct	WPM	incorrect	Kleidung	2		10	700	440524
+spatz_correct	441591	1460	Spatz	443057	443674	616	1	incorrect	FPM	correct	Voegel	1	19	1	1200	445106
+pinguin_incorrect	446406	940	Pinguin	447356	448908	1552	2	incorrect	FPM	incorrect	Voegel	1	54	18	700	449922
+wiege_incorrect	450721	1200	Wiege	451938	453439	1501	1	correct	FPM	incorrect	Moebel	1	43	12	1200	454237
+weintraube_word	455470	1460	Kokosnuss	456936	457489	552	1	correct	WPM	incorrect	Fruechte	1	35	9	900	458986
+kuerbis_correct	460269	1350	Kuerbis	461635	463082	1446	1	incorrect	FPM	correct	Gemuese	1	14	6	1200	463784
+schleifpapier_correct	465101	1280	Schleifpapier	466400	467476	1076	1	incorrect	FPM	correct	Werkzeug	1	29	8	3000	468616
+fledermaus_incorrect	476697	1230	Fledermaus	477930	479469	1538	1	correct	FPM	incorrect	Saeugetiere	1	90	2	1200	480213
+hubschrauber_incorrect	481463	1180	Hubschrauber	482662	483438	776	1	correct	FPM	incorrect	Fortbewegungsmittel	1	57	17	900	484978
+biber_word	485911	1130	Kamel	487044	487679	635	1	correct	WPM	incorrect	Saeugetiere	2		24	900	489427
+handschuh_word	490360	1180	Mantel	491543	492070	526	1	correct	WPM	incorrect	Kleidung	2		2	900	493876
+sellerie_correct	494875	970	Sellerie	495858	497358	1499	1	incorrect	FPM	correct	Gemuese	2		6	700	498391
+handschuh_correct	499191	920	Handschuh	500124	501060	935	2	correct	FPM	correct	Kleidung	2		4	1200	502706
+kiwi_word	503940	1190	Kiwi	505139	505780	640	2	correct	WPM	correct	Fruechte	1	40	5	1200	507455
+harke_incorrect	508738	1290	Harke	510038	511288	1250	2	incorrect	FPM	incorrect	Werkzeug	1	49	18	1200	512254
+kommode_word	513487	1410	Bank	514903	515773	869	2	incorrect	WPM	incorrect	Moebel	1	23	6	900	517002
+schlafanzug_correct	518002	1030	Schlafanzug	519035	520874	1838	1	incorrect	FPM	correct	Kleidung	1	18	7	700	521518
+moehre_word	522251	1170	Moehre	523434	524029	595	2	correct	WPM	correct	Gemuese	1	41	2	700	525767
+blaubeere_word	526500	1450	Birne	527966	528485	518	2	incorrect	WPM	incorrect	Fruechte	2		4	1200	530015
+radieschen_word	531248	1370	Kuerbis	532631	533254	623	1	correct	WPM	incorrect	Gemuese	2		8	700	534764
+geier_word	535497	1120	Spatz	536630	537262	632	1	correct	WPM	incorrect	Voegel	2		17	1200	539013
+hocker_correct	540579	1220	Hocker	541812	543006	1194	1	incorrect	FPM	correct	Moebel	1	78	17	900	544095
+zitrone_incorrect	545095	970	Zitrone	546077	546734	656	2	incorrect	FPM	incorrect	Fruechte	2		9	700	548610
+socke_incorrect	549393	1590	Socke	550993	551663	670	1	correct	FPM	incorrect	Kleidung	1	3	1	900	552909
+hemd_incorrect	553909	1080	Hemd	554992	555491	499	1	correct	FPM	incorrect	Kleidung	2		2	1200	557424
+kanu_word	558657	1260	Kanu	559924	560471	547	1	incorrect	WPM	correct	Fortbewegungsmittel	1	5	4	900	562173
+socke_word	563106	1220	Socke	564339	564981	642	2	correct	WPM	correct	Kleidung	2		8	900	566622
+kuerbis_word	567555	1300	Radieschen	568871	569395	523	2	incorrect	WPM	incorrect	Gemuese	2		1	900	571070
+kohlrabi_word	572003	1310	Brokkoli	573320	573928	608	1	correct	WPM	incorrect	Gemuese	2		24	1200	575519
+fahrrad_word	576752	1350	Fahrrad	578118	578591	473	1	incorrect	WPM	correct	Fortbewegungsmittel	2		1	700	580268
+kanu_incorrect	581018	1270	Kanu	582300	583363	1062	2	incorrect	FPM	incorrect	Fortbewegungsmittel	2		12	3000	584533
+dattel_word	592564	1170	Ananas	593747	594492	744	1	correct	WPM	incorrect	Fruechte	2		8	900	596080
+maurerkelle_word	597013	1390	Maurerkelle	598413	599410	997	1	incorrect	WPM	correct	Werkzeug	2		3	900	600529
+tiger_correct	601478	1220	Tiger	602711	603687	975	2	correct	FPM	correct	Saeugetiere	2		33	900	604994
+pullover_word	605927	1290	Schlafanzug	607227	608058	831	1	correct	WPM	incorrect	Kleidung	2		2	700	609443
+schraubenzieher_word	610176	1420	Schleifpapier	611609	612795	1185	1	correct	WPM	incorrect	Werkzeug	2		8	700	613692
+kleid_word	614425	1210	Kleid	615641	616389	748	1	incorrect	WPM	correct	Kleidung	2		9	1200	617940
+gans_incorrect	619523	950	Gans	620490	621553	1063	2	incorrect	FPM	incorrect	Voegel	2		19	900	623039
+bank_correct	624039	1240	Bank	625288	626819	1531	1	incorrect	FPM	correct	Moebel	2		2	700	627554
+kokosnuss_correct	628371	980	Kokosnuss	629354	630848	1493	2	correct	FPM	correct	Fruechte	2		9	1200	631886
+bank_word	633136	1160	Kommode	634302	635305	1002	2	incorrect	WPM	incorrect	Moebel	1	14	1	900	636652
+truhe_incorrect	637651	1210	Truhe	638868	640410	1542	1	correct	FPM	incorrect	Moebel	2		3	1200	641167
+schiff_correct	642467	1150	Schiff	643633	644917	1283	1	incorrect	FPM	correct	Fortbewegungsmittel	2		13	900	645982
+bohrmaschine_word	646915	1530	Bohrmaschine	648465	648988	523	2	correct	WPM	correct	Werkzeug	2		7	700	650431
+drehstuhl_word	651164	1390	Drehstuhl	652564	653469	904	2	correct	WPM	correct	Moebel	2		2	1200	654680
+hose_correct	656246	1010	Hose	657262	658964	1701	2	correct	FPM	correct	Kleidung	2		4	700	659762
+wiege_word	660495	1190	Wiege	661695	662963	1268	1	incorrect	WPM	correct	Moebel	2		1	900	664011
+sessel_correct	665260	990	Sessel	666260	667770	1510	2	correct	FPM	correct	Moebel	2		7	900	668776
+kirsche_word	669709	1190	Kirsche	670909	671666	757	2	correct	WPM	correct	Fruechte	1	28	3	900	673225
+hut_incorrect	674224	1430	Hut	675674	676443	769	2	incorrect	FPM	incorrect	Kleidung	2		12	700	677740
+axt_incorrect	678540	1170	Axt	679723	680789	1066	1	correct	FPM	incorrect	Werkzeug	2		10	700	682055
+weintraube_correct	682855	1000	Weintraube	683872	684950	1078	1	incorrect	FPM	correct	Fruechte	2		2	1200	686371
+mais_word	687604	860	Mais	688470	688997	526	2	correct	WPM	correct	Gemuese	1	18	6	700	691119
+kiwi_incorrect	691919	1250	Kiwi	693186	694690	1504	2	incorrect	FPM	incorrect	Fruechte	2		4	900	695435
+kommode_correct	696451	1210	Kommode	697668	698524	856	2	correct	FPM	correct	Moebel	2		5	3000	699967
+kutsche_correct	708015	940	Kutsche	708964	709607	642	2	correct	FPM	correct	Fortbewegungsmittel	1	23	10	700	711530
+pinguin_word	712264	1200	Pinguin	713480	713880	399	2	correct	WPM	correct	Voegel	2		6	700	715779
+ananas_word	716512	1320	Dattel	717845	718321	475	2	incorrect	WPM	incorrect	Fruechte	2		17	700	720028
+moehre_incorrect	720828	1000	Moehre	721844	723286	1441	1	correct	FPM	incorrect	Gemuese	2		12	1200	724343
+tisch_word	725576	1040	Tisch	726626	727123	497	1	incorrect	WPM	correct	Moebel	2		9	900	729092
+schraubenzieher_correct	730075	1130	Schraubenzieher	731208	732097	889	2	correct	FPM	correct	Werkzeug	2		3	1200	733591
+jeans_incorrect	734890	1300	Jeans	736207	737116	909	2	incorrect	FPM	incorrect	Kleidung	2			1200	738406
+eule_correct	739722	1450	Eule	741189	742351	1162	1	incorrect	FPM	correct	Voegel	1	25	7	900	743238
+harke_word	744171	1240	Harke	745421	746816	1394	2	correct	WPM	correct	Werkzeug	2		1	900	747687
+hobel_correct	748720	1150	Hobel	749886	751002	1115	2	correct	FPM	correct	Werkzeug	1	8	8	900	752235
+hubschrauber_word	753169	1300	Hubschrauber	754485	755149	664	2	correct	WPM	correct	Fortbewegungsmittel	2		12	900	756684
+eichhoernchen_incorrect	757617	1210	Eichhoernchen	758833	760251	1417	2	incorrect	FPM	incorrect	Saeugetiere	2		1	700	761133
+ziege_word	761866	1310	Ziege	763182	763730	547	1	incorrect	WPM	correct	Saeugetiere	2		16	700	765382
+sofa_word	766115	1200	Sofa	767331	768092	760	2	correct	WPM	correct	Moebel	2		18	700	769630
+spatz_word	770364	1150	Geier	771530	772127	597	2	incorrect	WPM	incorrect	Voegel	2		2	700	773879
+mais_incorrect	774662	1440	Mais	776112	778011	1898	1	correct	FPM	incorrect	Gemuese	2		9	1200	778178
+meise_word	779411	1210	Moewe	780627	781306	679	2	incorrect	WPM	incorrect	Voegel	2		4	700	782927
+meissel_word	783660	1190	Hobel	784859	785700	840	1	correct	WPM	incorrect	Werkzeug	2		1	1200	787175
+feile_word	788408	1220	Feile	789641	790248	606	1	incorrect	WPM	correct	Werkzeug	2		9	700	791924
+orange_incorrect	792741	1670	Orange	794423	795318	894	2	incorrect	FPM	incorrect	Fruechte	2		2	900	796256
+eule_word	797189	1220	Ente	798422	798886	463	1	correct	WPM	incorrect	Voegel	1	23	10	1200	800705
+kirsche_incorrect	801988	900	Kirsche	802904	803862	957	1	correct	FPM	incorrect	Fruechte	2			700	805504
+faehre_correct	806320	1320	Faehre	807653	808387	733	1	incorrect	FPM	correct	Fortbewegungsmittel	2		1	700	809836
+faehre_word	810586	1240	Kutsche	811835	812463	627	2	incorrect	WPM	incorrect	Fortbewegungsmittel	2		2	3000	814101
+paprika_word	822132	1330	Paprika	823482	824158	676	1	incorrect	WPM	correct	Gemuese	1	9	9	900	825648
+taxi_correct	826598	1330	Taxi	827947	828670	722	2	correct	FPM	correct	Fortbewegungsmittel	1	21	1	900	830113
+flugzeug_incorrect	831130	870	Flugzeug	832013	833181	1168	2	incorrect	FPM	incorrect	Fortbewegungsmittel	2		3	700	834645
+sichel_word	835378	1210	Walze	836595	837890	1295	1	correct	WPM	incorrect	Werkzeug	2		18	900	838894
+wal_incorrect	839860	1060	Wal	840927	841594	667	1	correct	FPM	incorrect	Saeugetiere	2		6	700	843376
+rollschuh_word	844109	1150	Rollschuh	845276	845789	513	1	incorrect	WPM	correct	Fortbewegungsmittel	1	12	10	700	847625
+elster_word	848358	1330	Elster	849708	850249	541	2	correct	WPM	correct	Voegel	2		2	1200	851874
+sessel_word	853123	1130	Schrank	854256	854948	692	2	incorrect	WPM	incorrect	Moebel	2		4	900	856639
+ente_word	857572	1220	Eule	858805	859616	811	1	correct	WPM	incorrect	Voegel	2		8	700	861088
+paprika_incorrect	861871	1130	Paprika	863004	864377	1372	1	correct	FPM	incorrect	Gemuese	2			1200	865386
+fuchs_word	866620	1100	Fuchs	867736	868309	573	2	correct	WPM	correct	Saeugetiere	2		2	900	870135
+schaukelstuhl_incorrect	871135	940	Schaukelstuhl	872085	873179	1094	2	incorrect	FPM	incorrect	Moebel	1	2	2	700	874650
+baer_correct	875434	940	Baer	876383	877470	1087	1	incorrect	FPM	correct	Saeugetiere	2		2	700	878949
+schaukelstuhl_word	879682	1430	Schaukelstuhl	881132	882622	1489	2	correct	WPM	correct	Moebel	2		7	1200	883198
+baer_word	884431	1130	Lama	885564	886203	638	2	incorrect	WPM	incorrect	Saeugetiere	2		4	700	887947
+schlitten_correct	888747	1170	Schlitten	889929	891486	1556	1	incorrect	FPM	correct	Fortbewegungsmittel	2		2	900	892262
+wellensittich_word	893195	1510	Wellensittich	894711	895216	504	2	correct	WPM	correct	Voegel	2		3	900	896711
+rollschuh_incorrect	897694	1070	Rollschuh	898777	900167	1389	2	incorrect	FPM	incorrect	Fortbewegungsmittel	2		5	700	901210
+fledermaus_word	901943	1580	Fledermaus	903542	904019	476	1	incorrect	WPM	correct	Saeugetiere	2			700	905458
+ente_correct	906258	1370	Ente	907641	908340	698	2	correct	FPM	correct	Voegel	2			1200	909774
+regal_word	911007	1190	Hocker	912206	912834	627	2	incorrect	WPM	incorrect	Moebel	2			1200	914522
+saege_word	915756	1220	Saege	916988	917484	495	1	incorrect	WPM	correct	Werkzeug	2			1200	919271
+schlitten_word	920521	1130	Taxi	921654	922461	807	2	incorrect	WPM	incorrect	Fortbewegungsmittel	2		1	900	924036
+zug_incorrect	925020	930	Zug	925953	926715	761	1	correct	FPM	incorrect	Fortbewegungsmittel	2			0	925953
