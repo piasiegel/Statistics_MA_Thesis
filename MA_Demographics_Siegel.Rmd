@@ -140,5 +140,5 @@ Freq_r_Severity <- round(prop.table (table(MA_demo_data$Severity))*100,4)
 table_Severity <- cbind(Freq_a_Severity, Freq_r_Severity)
 
 
-### export MA_behav_data
+### export MA_demo_data
 write.xlsx(MA_demo_data, '/Users/piamariesiegel/Desktop/Master Studium/Masterarbeit/Statistics_MA_Thesis/data/MA_demo_data.xlsx')
