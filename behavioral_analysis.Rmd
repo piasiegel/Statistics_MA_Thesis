@@ -211,8 +211,8 @@ summary(m_RT1)
 
 drop1(m_RT1, test = "Chisq")
 
-plot(ggeffect(m_RT1, terms = c("condition", "congruency")))
-plot(ggeffect(m_RT1, terms = c("Lesion_volume_z")))
+plot(ggemmeans(m_RT1, terms = c("condition", "congruency")))
+plot(ggemmeans(m_RT1, terms = c("Lesion_volume_z")), limit.range = T, collapse.group = T)
 ```
 
 
