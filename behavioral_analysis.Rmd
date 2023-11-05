@@ -27,6 +27,8 @@ library(ggeffects)
 library(stringr)
 library(fitdistrplus)
 library(see)
+library(cowplot)
+library(performance)
 ```
 
 
@@ -51,13 +53,8 @@ std.error <- function(x, na.rm = TRUE){sd(x, na.rm = TRUE)/sqrt(length(x[!is.na(
 
 # Load data
 ```{r Load R data}
-# full df including all sessions
-#load(here::here("Behavioral/df_behav_06_2022.RData"))
-load(here::here('Behavioral/df_behav_07_2023_wEdu.RData'))
-
-# df only with TMS sessions
-#load(here::here("Behavioral/df_TMS_06_2022.RData"))
-load(here::here('Behavioral/df_TMS_07_2023_wEdu.RData'))
+# full df including demographic and npsy dara
+load(here::here("RData/all_files_11_2023.RData"))
 ```
 
 ```{r Read in data, message=FALSE, include=FALSE, eval=FALSE}
@@ -106,8 +103,6 @@ all_files$category <- as.factor(all_files$category)
 all_files$buttons <- as.factor(all_files$buttons)
 all_files <- all_files[, c(18, 19, 10, 11, 1:9, 12:17, 20)]
 
-save(all_files, file = 'RData/all_files_10_2023.RData')
-
 
 ## Count NA values
 df_na <- all_files %>% 
@@ -119,21 +114,37 @@ df_na <- all_files %>%
 df_err <- all_files %>% 
   group_by(sub, run, condition) %>% 
   summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
+
+#---- read in demographic and neuropsychological data ----
+df_npsy <- read.table(here::here("raw_data/Npsy_data.txt"), header = T, sep = "\t")
+df_npsy$sub <- str_pad(df_npsy$sub, width = 3, side = "left", pad = "0")
+
+#---- merge dfs ----
+all_files <- full_join(all_files, df_npsy)
+
+# sort columns
+all_files <- all_files[,c(1,21:29,2:20,30:46)]
+
+# save df
+save(all_files, file = 'RData/all_files_11_2023.RData')
 ```
 
-# Prepare df for reaction time analysis
+# RT analysis
+## Prepare df for reaction time analysis
 ```{r}
 # remove NA values
-df_behav <- all_files[!is.na(all_files$response_time),]
+df_RT <- all_files[!is.na(all_files$response_time),]
 
 # remove incorrect answers
-df_RT <- df_behav[df_behav$accuracy != "incorrect", ]
+df_RT <- df_RT[df_RT$accuracy != "incorrect", ]
+
+df_RT$response_time <- as.numeric(df_RT$response_time)
 
 # remove RTs before picture was shown (equals rt = 0)
 df_RT <- df_RT[!(df_RT$response_time_absolute < df_RT$time_picture),]
 ```
 
-## Plots
+## Plot
 ```{r}
 # relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
@@ -171,18 +182,18 @@ RT_cond
 ```{r Describe distribution of RT}
 descdist(df_RT$response_time)
 descdist(log(df_RT$response_time)) # log-transform leads to perfect normal dist
+lattice::densityplot(log(df_RT$response_time))
 ```
 
-### Model including baseline session
-Based on our a priori hypotheses, we included fixed effects for session and condition. 
+### Model
 ```{r RT - Model including baseline session}
 # relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
 df_RT$congruency <- factor(df_RT$congruency, levels = c("congruent", "incongruent"))
-df_RT$age_z <- scale(df_RT$age, scale = F)
+df_RT$age_z <- scale(df_RT$Age, scale = T)
+df_RT$Lesion_volume_z <- scale(df_RT$Lesion_volume, scale = T)
 
-# Simple coding
-
+#---- Simple coding ----
 # create a Simple Coding scheme
 # https://stats.oarc.ucla.edu/r/library/r-library-contrast-coding-systems-for-categorical-variables/
 # creating the contrast matrix manually by modifying the dummy coding scheme
@@ -194,11 +205,88 @@ my.simple <- c-my.coding
 contrasts(df_RT$condition) <- my.simple
 contrasts(df_RT$congruency) <- my.simple
 
-m_RT2 <- lmer(log(response_time) ~ condition * congruency + run + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F)
-summary(m_RT2)
+#---- fit model ----
+m_RT2 <- lmer(log(response_time) ~ condition * congruency + run + Lesion_volume_z + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F, lmerControl(optimizer = "bobyqa"))
+summary(m_RT1)
 
 drop1(m_RT1, test = "Chisq")
 
-plot(ggeffect(m_RT1, terms = c("condition", "congruency")))
+plot(ggemmeans(m_RT1, terms = c("condition", "congruency")))
+plot(ggemmeans(m_RT1, terms = c("Lesion_volume_z")), limit.range = T, collapse.group = T)
+```
 
+
+# Accuracy analysis
+## Prepare df for accuracy analysis
+```{r}
+# remove NA values
+df_behav <- all_files[!is.na(all_files$response_time),]
+
+# remove reactions before picture was shown (equals rt = 0)
+df_behav <- df_behav[!(df_behav$response_time_absolute < df_behav$time_picture),]
+```
+
+## Plot
+```{r}
+# relevel factors
+df_behav$condition <- factor(df_behav$condition, levels = c("WPM", "FPM"))
+
+# Create summary df for accuracy
+summary_acc <- df_behav %>% 
+  group_by(sub, condition, congruency) %>% 
+  summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
+
+
+# Plot by Task
+Acc_cond <- ggplot(summary_acc, aes(x = condition, y = prop*100, fill = condition)) +
+  geom_violinhalf(aes(fill = condition), position = position_nudge(x = 0.2, y = 0), alpha = 0.6, color = NA) +
+  geom_boxplot(alpha = 1, width = .3, colour = "black", outlier.shape = NA, position = position_dodge(width = 0.4)) +
+  scale_colour_manual(values =palet_task, labels = c("WPM", "FPM")) + 
+  scale_fill_manual(values = palet_task, labels = c("WPM", "FPM")) +
+  labs(y = "Accuracy in %") +
+  apatheme +
+  theme(legend.position=("none"), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=12),
+        axis.title.x = element_blank())
+# facet_wrap(~ congruency)
+Acc_cond
+```
+
+## Mixed-effects regression
+### Model
+```{r Accuracy - Model}
+# relevel factors
+df_behav$condition <- factor(df_behav$condition, levels = c("WPM", "FPM"))
+df_behav$congruency <- factor(df_behav$congruency, levels = c("congruent", "incongruent"))
+df_behav$age_z <- scale(df_behav$Age, scale = T)
+df_behav$Lesion_volume_z <- scale(df_behav$Lesion_volume, scale = T)
+
+#---- Simple coding ----
+# create a Simple Coding scheme
+# https://stats.oarc.ucla.edu/r/library/r-library-contrast-coding-systems-for-categorical-variables/
+# creating the contrast matrix manually by modifying the dummy coding scheme
+c <- contr.treatment(2)
+my.coding <- matrix(rep(1/2, 2), ncol = 1) 
+my.simple <- c-my.coding
+
+#assign the new coding scheme
+contrasts(df_behav$condition) <- my.simple
+contrasts(df_behav$congruency) <- my.simple
+
+df_behav <- df_behav %>% 
+  mutate(correct = case_when(
+    accuracy == "correct" ~ 1,
+    accuracy == "incorrect" ~ 0
+  ))
+df_behav$correct <- as.factor(df_behav$correct)
+
+#---- Model ----
+m_acc1 <- glmer(correct ~ condition * congruency + run + Lesion_volume_z + (1 + run + condition + congruency|sub) + (1|stimulus_audio), data = df_behav, family = binomial(link = "logit"), glmerControl(optimizer = "bobyqa")) # model with interaction in random slopes is singular
+summary(m_acc1)
+
+m_acc_res <- drop1(m_acc1, test = "Chisq")
+
+plot(ggeffect(m_acc1, terms = c("condition", "congruency")))
+plot(ggeffect(m_acc1, terms = c("Lesion_volume_z")), collapse.group = T, limit.range = T)
 ```
