@@ -207,6 +207,9 @@ contrasts(df_RT$congruency) <- my.simple
 
 #---- fit model ----
 m_RT1 <- lmer(log(response_time) ~ condition * congruency + run + Lesion_volume_z + age_z + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F, lmerControl(optimizer = "bobyqa"))
+
+save(m_RT1, file = here::here(paste0("RData/m_RT_", today, ".RData")))
+
 summary(m_RT1)
 
 m_RT_res <- drop1(m_RT2, test = "Chisq")
@@ -311,6 +314,9 @@ df_behav$correct <- as.factor(df_behav$correct)
 
 #---- Model ----
 m_acc1 <- glmer(correct ~ condition * congruency + run + Lesion_volume_z + (1 + run + condition + congruency|sub) + (1|stimulus_audio), data = df_behav, family = binomial(link = "logit"), glmerControl(optimizer = "bobyqa")) # model with interaction in random slopes is singular
+
+save(m_acc1, file = here::here(paste0("RData/m_acc_", today, ".RData")))
+
 summary(m_acc1)
 
 m_acc_res <- drop1(m_acc1, test = "Chisq")
