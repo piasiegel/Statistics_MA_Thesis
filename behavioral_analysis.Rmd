@@ -41,9 +41,8 @@ apatheme <- theme_bw()+
 today <- Sys.Date()
 today <- format(today, format="%y%m%d")
 
-palet_cond <- c("#DC964F","gray65","#4477AA")
-palet_cond2 <- c("#DC964F","#009E73","#4477AA")
 palet_task <- c("#BBBBBB","#994455")
+palet_task_cong <- c("#BBBBBB","#5D5D5D", "#994455", "#4d222b")
 
 output_path = here::here("Plots/")
 
@@ -161,8 +160,8 @@ summary_rt_full <- df_RT %>% group_by(condition) %>%
 RT_cond <- ggplot(df_RT, aes(x = condition, y = response_time, fill = condition)) + 
   geom_violinhalf(aes(fill = condition), position = position_nudge(x = .2, y = 0), adjust = 1.5, trim = FALSE, alpha = .6, colour = NA) +
   geom_boxplot(alpha = 1, width = .3, colour = "black", outlier.shape = NA, position = position_dodge(width = 0.4)) +
-  geom_point(data=summary_rt_full, aes(x = condition, y = mean_rt, group = condition, colour = condition), shape=18, position = position_nudge(x = .2, y = 0)) +
-  geom_errorbar(data=summary_rt_full, aes(x = condition, y = mean_rt, group = condition, colour = condition, ymin = mean_rt - std.error_rt, ymax = mean_rt + std.error_rt), width = .05, position = position_nudge(x = .2, y = 0)) +
+  #geom_point(data=summary_rt_full, aes(x = condition, y = mean_rt, group = condition, colour = condition), shape=18, position = position_nudge(x = .2, y = 0)) +
+  #geom_errorbar(data=summary_rt_full, aes(x = condition, y = mean_rt, group = condition, colour = condition, ymin = mean_rt - std.error_rt, ymax = mean_rt + std.error_rt), width = .05, position = position_nudge(x = .2, y = 0)) +
   scale_colour_manual(values =palet_task, labels = c("WPM", "FPM")) + 
   scale_fill_manual(values = palet_task, labels = c("WPM", "FPM")) +
   #scale_x_discrete(labels = c("Baseline", "Active", "Sham")) +
@@ -175,6 +174,7 @@ RT_cond <- ggplot(df_RT, aes(x = condition, y = response_time, fill = condition)
         axis.title.x = element_blank())
 #  facet_wrap(~ congruency)
 RT_cond
+save_plot(RT_cond, file = here::here(paste0("Plots/RT_cond_", today, ".pdf")))
 ```
 
 ## Mixed-effects regression
@@ -206,13 +206,40 @@ contrasts(df_RT$condition) <- my.simple
 contrasts(df_RT$congruency) <- my.simple
 
 #---- fit model ----
-m_RT2 <- lmer(log(response_time) ~ condition * congruency + run + Lesion_volume_z + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F, lmerControl(optimizer = "bobyqa"))
+m_RT1 <- lmer(log(response_time) ~ condition * congruency + run + Lesion_volume_z + age_z + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F, lmerControl(optimizer = "bobyqa"))
 summary(m_RT1)
 
-drop1(m_RT1, test = "Chisq")
+m_RT_res <- drop1(m_RT2, test = "Chisq")
+save(m_RT_res, file = here::here(paste0("RData/m_RT_res", today, ".RData")))
 
-plot(ggemmeans(m_RT1, terms = c("condition", "congruency")))
-plot(ggemmeans(m_RT1, terms = c("Lesion_volume_z")), limit.range = T, collapse.group = T)
+RT_int <- plot(ggemmeans(m_RT1, terms = c("condition", "congruency")), collapse.group = "sub") +
+  scale_colour_manual(values = palet_task) +
+  ylab("Reaction time in ms") +
+  apatheme +
+  theme(axis.title.x = element_blank(),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text=element_text(size=10))
+RT_int
+save_plot(RT_int, file = here::here(paste0("Plots/m_RT_cond_cong_", today, ".pdf")))
+
+RT_lesionVol <- plot(ggemmeans(m_RT1, terms = c("Lesion_volume_z")), limit.range = T, collapse.group = "sub") +
+  ylab("Reaction time in ms") +
+  xlab("Standardized lesion volume") +
+  apatheme +
+   theme(legend.position = "none",
+        legend.title = element_blank())
+RT_lesionVol
+save_plot(RT_lesionVol, file = here::here(paste0("Plots/m_RT_lesionVol_", today, ".pdf")))
+
+RT_run <- plot(ggemmeans(m_RT1, terms = c("run")), collapse.group = "sub") +
+  ylab("Reaction time in ms") +
+  xlab("Run") +
+  apatheme +
+   theme(legend.position = "none",
+        legend.title = element_blank())
+RT_run
+save_plot(RT_run, file = here::here(paste0("Plots/m_RT_run_", today, ".pdf")))
 ```
 
 
@@ -251,6 +278,7 @@ Acc_cond <- ggplot(summary_acc, aes(x = condition, y = prop*100, fill = conditio
         axis.title.x = element_blank())
 # facet_wrap(~ congruency)
 Acc_cond
+save_plot(Acc_cond, file = here::here(paste0("Plots/Acc_cond_", today, ".pdf")))
 ```
 
 ## Mixed-effects regression
@@ -286,7 +314,26 @@ m_acc1 <- glmer(correct ~ condition * congruency + run + Lesion_volume_z + (1 + 
 summary(m_acc1)
 
 m_acc_res <- drop1(m_acc1, test = "Chisq")
+save(m_acc_res, file = here::here(paste0("RData/m_acc_res", today, ".RData")))
 
-plot(ggeffect(m_acc1, terms = c("condition", "congruency")))
-plot(ggeffect(m_acc1, terms = c("Lesion_volume_z")), collapse.group = T, limit.range = T)
+Acc_int <- plot(ggemmeans(m_acc1, terms = c("condition", "congruency")), collapse.group = "sub") +
+  scale_colour_manual(values = palet_task) +
+  coord_cartesian(ylim = c(0.5, 1)) +
+  ylab("Accuracy") +
+  apatheme +
+  theme(axis.title.x = element_blank(),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text=element_text(size=10))
+Acc_int
+save_plot(Acc_int, file = here::here(paste0("Plots/m_Acc_cond_cong_", today, ".pdf")))
+
+Acc_lesionVol <- plot(ggemmeans(m_acc1, terms = c("Lesion_volume_z[all]")), limit.range = T) +
+  coord_cartesian(ylim = c(0.4, 1)) +
+  ylab("Accuracy") +
+  xlab("Standardized lesion volume") +
+  apatheme +
+  theme(legend.position = "none")
+Acc_lesionVol
+save_plot(Acc_lesionVol, file = here::here(paste0("Plots/m_Acc_lesionVol_", today, ".pdf")))
 ```
