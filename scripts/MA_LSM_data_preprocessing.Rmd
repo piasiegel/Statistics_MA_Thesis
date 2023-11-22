@@ -12,7 +12,6 @@ output: html_document
    library(readxl)
    library(psych)
    library(tidyverse)
-   library(openxlsx)
    library(lubridate)
    library(dplyr)
 ```
@@ -20,52 +19,95 @@ output: html_document
 ### load data
 ```{r}
 here::here()
-    load(here("./RData/all_files_11_2023.RData"))
-    data_raw <- all_files
+load(here("./RData/all_files_11_2023.RData"))
+data_raw <- all_files
 ```
 
-### Data frame
+### Data cleaning and preparing data frame
 ```{r}
 ## rename "ID" into "RegistryCode"
-   ID <- as.numeric(data_raw$ID)
-   data_initial <- rename(data_raw, RegistryCode = ID)
+data_initial <- data_raw %>% 
+  rename(RegistryCode = ID)
    
-   ## Create variable 'Months since Onset (MSO)'
+## Create variable 'Months since Onset (MSO)'
 # Calculate 'Months since Onset'
-  MSO <- interval(data_initial$test, data_initial$onset) %/% months(1)
+data_initial$test <- as.Date(data_initial$test, format = "%d.%m.%y")
+data_initial$onset <- as.Date(data_initial$onset, format = "%d.%m.%y")
+data_initial$WSO <- difftime(data_initial$test, data_initial$onset, units = "weeks")
+data_initial$WSO <- as.numeric(data_initial$WSO)
 
-# create new variable MSO
-  data_initial$MSO <- MSO
+# remove NA trials --> participants were too slow to react on time or didn't react at all
+data_initial <- filter(data_initial, !(is.na(accuracy)))
 
-### create dataframes 
+# make numeric variable for accuracy
+data_initial$accuracy_num <- ifelse(data_initial$accuracy == "correct", 1, ifelse(data_initial$accuracy == "incorrect", 0, NA))
+```
+
+
+```{r}
+### create dataframe for accuracy 
+
 ## SVR-LSM (WPM - accuracy)
-# create covariate "FPM - accuracy"
-  FPM_acc <- filter(data_initial, condition == "FPM")
-  FPM <- FPM_acc$accuracy
-
-# filter data according to condition
-  data_WPM_acc <- filter(data_initial, condition == "WPM")
-  
-# Calculate mean of accuracy for each participant
-
-  data_WPM_acc$mean_acc <- with(data_WPM_acc, mean(score[]))
-
 # create new data frame with relevant variables 
-  data_WPM_acc <- data_WPM_acc[c('RegistryCode',
+data_WPM_acc <- data_initial[c('RegistryCode',
                                  'age',
-                                 'MSO',
+                                 'WSO',
                                  'resolution',
                                  'severity',
                                  'condition',
-                                 'accuracy')]
+                                 'accuracy_num')]
 
-# add covariate "FPM" to the data frame "data_WPM_acc"                                      
-  data_WPM_acc <- cbind(data_WPM_acc, FPM)
+# Calculate mean of accuracy for each participant
+df_WPM_acc_summary <- data_WPM_acc %>% 
+  group_by(RegistryCode, condition) %>% 
+  mutate(average_accuracy = mean(accuracy_num)) %>% 
+  select(-accuracy_num) %>% 
+  distinct()
+
+df_WPM_acc_summary <- df_WPM_acc_summary %>% 
+  pivot_wider(names_from = condition, values_from = average_accuracy)
+
+# example way to filter df for specific subject
+id4086 <- filter(data_initial, RegistryCode == "4086")
 
 # extract data frame "data_WPM_acc"
-  write.csv(data_WPM_acc, here("./RData/data_WPM_acc.csv"), row.names=TRUE)
+write.csv(df_WPM_acc_summary, here("./RData/data_WPM_acc.csv"), row.names = F)
+```
+
+# prepare df for RT
+```{r}
+# remove incorrect trials from df
+data_RT <- filter(data_initial, accuracy == "correct")
+
+# create new data frame with relevant variables 
+data_RT_cond <- data_RT[c('RegistryCode',
+                                 'age',
+                                 'WSO',
+                                 'resolution',
+                                 'severity',
+                                 'condition',
+                                 'response_time')]
+
+# Calculate mean of accuracy for each participant
+df_RT_cond_summary <- data_RT_cond %>% 
+  group_by(RegistryCode, condition) %>% 
+  mutate(average_RT = mean(response_time)) %>% 
+  select(-response_time) %>% 
+  distinct()
+
+df_RT_cond_summary <- df_RT_cond_summary %>% 
+  pivot_wider(names_from = condition, values_from = average_RT)
+
+# extract data frame "data_WPM_acc"
+write.csv(df_WPM_acc_summary, here("./RData/data_WPM_acc.csv"), row.names = F)
+
+```
 
 
+
+
+
+```{r}
 ## SVR-LSM (WPM - RT)
 # create covariate "FPM" - rt
   FPM_rt <- filter(data_initial, condition == "FPM")
