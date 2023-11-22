@@ -1,0 +1,188 @@
+---
+title: "MA_LSM_data_preprocessing"
+author: "Siegel"
+date: "2023-11-14"
+output: html_document
+---
+### packages
+
+```{r}
+## load packages
+   library(here)
+   library(readxl)
+   library(psych)
+   library(tidyverse)
+   library(openxlsx)
+   library(lubridate)
+   library(dplyr)
+```
+
+### load data
+```{r}
+here::here()
+    load(here("./RData/all_files_11_2023.RData"))
+    data_raw <- all_files
+```
+
+### Data frame
+```{r}
+## rename "ID" into "RegistryCode"
+   ID <- as.numeric(data_raw$ID)
+   data_initial <- rename(data_raw, RegistryCode = ID)
+   
+   ## Create variable 'Months since Onset (MSO)'
+# Calculate 'Months since Onset'
+  MSO <- interval(data_initial$test, data_initial$onset) %/% months(1)
+
+# create new variable MSO
+  data_initial$MSO <- MSO
+
+### create dataframes 
+## SVR-LSM (WPM - accuracy)
+# create covariate "FPM - accuracy"
+  FPM_acc <- filter(data_initial, condition == "FPM")
+  FPM <- FPM_acc$accuracy
+
+# filter data according to condition
+  data_WPM_acc <- filter(data_initial, condition == "WPM")
+  
+# Calculate mean of accuracy for each participant
+
+  data_WPM_acc$mean_acc <- with(data_WPM_acc, mean(score[]))
+
+# create new data frame with relevant variables 
+  data_WPM_acc <- data_WPM_acc[c('RegistryCode',
+                                 'age',
+                                 'MSO',
+                                 'resolution',
+                                 'severity',
+                                 'condition',
+                                 'accuracy')]
+
+# add covariate "FPM" to the data frame "data_WPM_acc"                                      
+  data_WPM_acc <- cbind(data_WPM_acc, FPM)
+
+# extract data frame "data_WPM_acc"
+  write.csv(data_WPM_acc, here("./RData/data_WPM_acc.csv"), row.names=TRUE)
+
+
+## SVR-LSM (WPM - RT)
+# create covariate "FPM" - rt
+  FPM_rt <- filter(data_initial, condition == "FPM")
+  FPM <- FPM_rt$response_time
+  
+# filter data according to condition
+  data_WPM_rt <- filter(data_initial, condition == "WPM")
+
+# create new data frame with relevant variables 
+  data_WPM_rt <- data_WPM_rt[c('RegistryCode',
+                               'age',
+                               'MSO',
+                               'resolution',
+                               'severity',
+                               'condition',
+                               'response_time')]
+
+# add covariate "FPM" to the data frame "data_WPM_rt"                                      
+  data_WPM_rt <- cbind(data_WPM_rt, FPM)
+
+# extract data frame "data_WPM_rt"
+  write.csv(data_WPM_rt, here("./RData/data_WPM_rt.csv"), row.names=TRUE)
+
+
+## SVR-LSM (FPM - accuracy)
+# create covariate "WPM" - accuracy
+  WPM_acc <- filter(data_initial, condition == "WPM")
+  WPM <- WPM_acc$accuracy
+  
+# filter data according to condition
+  data_FPM_acc <- filter(data_initial, condition == "FPM")
+
+# create new data frame with relevant variables 
+  data_FPM_acc <- data_FPM_acc[c('RegistryCode',
+                                 'age',
+                                 'MSO',
+                                 'resolution',
+                                 'severity',
+                                 'condition',
+                                 'accuracy')]
+
+# add covariate "WPM" to the data frame "data_FPM_acc"                                      
+  data_FPM_acc <- cbind(data_FPM_acc, WPM)
+
+# extract data frame "data_FPM_acc"
+  write.csv(data_FPM_acc, here("./RData/data_FPM_acc.csv"), row.names=TRUE)
+  
+
+## SVR-LSM (FPM - RT)
+# create covariate "WPM" - rt
+  WPM_rt <- filter(data_initial, condition == "WPM")
+  WPM <- WPM_rt$response_time
+
+# filter data according to condition
+  data_FPM_rt <- filter(data_initial, condition == "FPM")
+
+# create new data frame with relevant variables 
+  data_FPM_rt <- data_FPM_rt[c('RegistryCode',
+                                 'age',
+                                 'MSO',
+                                 'resolution',
+                                 'severity',
+                                 'condition',
+                                 'response_time')]
+
+# add covariate "WPM" to the data frame "data_FPM_rt"                                      
+  data_FPM_rt <- cbind(data_FPM_rt, WPM)
+
+# extract data frame "data_FPM_rt"
+  write.csv(data_FPM_rt, here("./RData/data_FPM_rt.csv"), row.names=TRUE)
+  
+  
+## SVR-LSM (incongruent stimuli - accuracy)
+# create covariate "congruent" - accuracy 
+  congruent_acc <- filter(data_initial, congruency == "congruent")
+  congruent <- congruent_acc$accuracy
+  
+# filter data according to condition
+  data_incongruent_acc <- filter(data_initial, congruency == "incongruent")
+
+# create new data frame with relevant variables 
+  data_incongruent_acc <- data_incongruent_acc[c('RegistryCode',
+                                                 'age',
+                                                 'MSO',
+                                                 'resolution',
+                                                 'severity',
+                                                 'condition',
+                                                 'accuracy')]
+                                                 
+# add covariate "congruent" to the data frame "data_incongruent_acc"                                  
+  data_incongruent_acc <- cbind(data_incongruent_acc, congruent)
+
+# extract data frame "data_incongruent_acc"
+  write.csv(data_incongruent_acc, here("./RData/data_incongruent_acc.csv"), row.names=TRUE)
+  
+  
+## SVR-LSM (incongruent stimuli - RT)
+# create covariate "congruent" - rt 
+  congruent_rt <- filter(data_initial, congruency == "congruent")
+  congruent <- congruent_rt$response_time
+
+# filter data according to condition
+  data_incongruent_rt <- filter(data_initial, congruency == "incongruent")
+
+# create new data frame with relevant variables 
+  data_incongruent_rt <- data_incongruent_rt[c('RegistryCode',
+                                                 'age',
+                                                 'MSO',
+                                                 'resolution',
+                                                 'severity',
+                                                 'condition',
+                                                 'response_time')]
+                                                 
+# add covariate "congruent" to the data frame "data_incongruent_rt"                                  
+  data_incongruent_rt <- cbind(data_incongruent_rt, congruent)
+
+# extract data frame "data_incongruent_rt"
+  write.csv(data_incongruent_rt, here("./RData/data_incongruent_rt.csv"), row.names=TRUE)
+```
+
