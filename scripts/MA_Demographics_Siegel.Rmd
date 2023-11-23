@@ -4,9 +4,9 @@ author: "Siegel"
 date: "2023-10-13"
 output: html_document
 ---
-# packages
+# Packages
 ```{r}
-## load packages
+## Load packages
 library(here)
 library(readxl)
 library(psych)
@@ -15,7 +15,7 @@ library(openxlsx)
 library(lubridate)
 ```
 
-# load data
+# Load data
 ```{r}
 here::here()
 load(here("./RData/all_files_11_2023.RData"))
@@ -60,9 +60,9 @@ MSO_pos[sapply(MSO_pos, is.numeric)] <- MSO_pos[sapply(MSO_pos, is.numeric)]*-1
 df_demo_data$MSO <- MSO_pos
 ```
 
-# descriptive statistics - demographics
+# Descriptive statistics - demographics
 ```{r}
-## describe data
+## Describe data
 select(.data = df_demo_data, c(sex:severity))%>%describe(.)
 
 ## Mean and SD of age, lesion volume, months since onset, TT and SV (AAT)
@@ -79,14 +79,14 @@ mean(df_demo_data$MSO)
 sd(df_demo_data$MSO)
 
 ### TT (AAT)
-#### remove NA trials
+#### Remove NA trials
 df_demo_data_TT <- filter(df_demo_data, !(is.na(TokenTest_corr)))
 
 mean(df_demo_data_TT$TokenTest_corr)
 sd(df_demo_data_TT$TokenTest_corr)
 
 ### SV (AAT)
-#### remove NA trials
+#### Remove NA trials
 
 df_demo_data_SV <- filter(df_demo_data, !(is.na(AAT_SV)))
 
@@ -102,8 +102,8 @@ max(df_demo_data$age)
 min(df_demo_data$MSO)
 max(df_demo_data$MSO)
 
-## frequency table (absolute & relative)
-## sex
+## Frequency table (absolute & relative)
+## Sex
 Freq_a_Sex <- table(df_demo_data$sex)
 Freq_r_Sex <- round(prop.table (table(df_demo_data$sex))*100,4)
 table_Sex <- cbind(Freq_a_Sex, Freq_r_Sex)
