@@ -103,27 +103,27 @@ min(df_demo_data$MSO)
 max(df_demo_data$MSO)
 
 ## Frequency table (absolute & relative)
-## Sex
+### Sex
 Freq_a_Sex <- table(df_demo_data$sex)
 Freq_r_Sex <- round(prop.table (table(df_demo_data$sex))*100,4)
 table_Sex <- cbind(Freq_a_Sex, Freq_r_Sex)
 
-# Aetiology
+### Aetiology
 Freq_a_Etiol <- table(df_demo_data$etiology)
 Freq_r_Etiol <- round(prop.table (table(df_demo_data$etiology))*100,4)
 table_Etiol <- cbind(Freq_a_Etiol, Freq_r_Etiol)
 
-# Hemisphere
+### Hemisphere
 Freq_a_Hemi <- table(df_demo_data$hemi)
 Freq_r_Hemi <- round(prop.table (table(df_demo_data$hemi))*100,4)
 table_Hemi <- cbind(Freq_a_Hemi, Freq_r_Hemi)
 
-# Aphasia
+### Aphasia
 Freq_a_Aphasia <- table(df_demo_data$aphasia)
 Freq_r_Aphasia <- round(prop.table (table(df_demo_data$aphasia))*100,4)
 table_Aphasia <- cbind(Freq_a_Aphasia, Freq_r_Aphasia)
 
-# Severity
+### Severity
 Freq_a_Severity <- table(df_demo_data$severity)
 Freq_r_Severity <- round(prop.table (table(df_demo_data$severity))*100,4)
 table_Severity <- cbind(Freq_a_Severity, Freq_r_Severity)
