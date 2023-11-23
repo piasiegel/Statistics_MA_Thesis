@@ -35,10 +35,10 @@ data_raw$onset <- as.Date(data_raw$onset, format = "%d.%m.%y")
 data_raw$WSO <- difftime(data_raw$test, data_raw$onset, units = "weeks")
 data_raw$WSO <- as.numeric(data_raw$WSO)
 
-# remove NA trials --> participants were too slow to react on time or didn't react at all
+## remove NA trials --> participants were too slow to react on time or didn't react at all
 data_raw <- filter(data_raw, !(is.na(accuracy)))
 
-# make numeric variable for accuracy
+## make numeric variable for accuracy
 data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_raw$accuracy == "incorrect", 0, NA))
 ```
 
