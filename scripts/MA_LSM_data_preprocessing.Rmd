@@ -4,227 +4,146 @@ author: "Siegel"
 date: "2023-11-14"
 output: html_document
 ---
-### packages
-
+# packages
 ```{r}
 ## load packages
    library(here)
-   library(readxl)
    library(psych)
    library(tidyverse)
-   library(lubridate)
    library(dplyr)
 ```
 
-### load data
+# load data
 ```{r}
 here::here()
 load(here("./RData/all_files_11_2023.RData"))
 data_raw <- all_files
 ```
 
-### Data cleaning and preparing data frame
+# Data cleaning and preparing data frame
 ```{r}
 ## rename "ID" into "RegistryCode"
-data_initial <- data_raw %>% 
-  rename(RegistryCode = ID)
+data_raw <- data_raw %>% 
+rename(RegistryCode = ID)
    
-## Create variable 'Months since Onset (MSO)'
-# Calculate 'Months since Onset'
-data_initial$test <- as.Date(data_initial$test, format = "%d.%m.%y")
-data_initial$onset <- as.Date(data_initial$onset, format = "%d.%m.%y")
-data_initial$WSO <- difftime(data_initial$test, data_initial$onset, units = "weeks")
-data_initial$WSO <- as.numeric(data_initial$WSO)
+## Create as well as calculate variable 'Weeks since Onset (WSO)'
+### Define variables 'test' and 'onset' as dates
+data_raw$test <- as.Date(data_raw$test, format = "%d.%m.%y")
+data_raw$onset <- as.Date(data_raw$onset, format = "%d.%m.%y")
+
+### Calculate 'WSO'
+data_raw$WSO <- difftime(data_raw$test, data_raw$onset, units = "weeks")
+data_raw$WSO <- as.numeric(data_raw$WSO)
 
 # remove NA trials --> participants were too slow to react on time or didn't react at all
-data_initial <- filter(data_initial, !(is.na(accuracy)))
+data_raw <- filter(data_raw, !(is.na(accuracy)))
 
 # make numeric variable for accuracy
-data_initial$accuracy_num <- ifelse(data_initial$accuracy == "correct", 1, ifelse(data_initial$accuracy == "incorrect", 0, NA))
+data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_raw$accuracy == "incorrect", 0, NA))
 ```
 
-
+# Create dataframe for accuracy (condition)
 ```{r}
-### create dataframe for accuracy 
+## Create new data frame with relevant variables 
+data_acc_cond <- data_raw[c('RegistryCode',
+                            'age',
+                            'WSO',
+                            'resolution',
+                            'TokenTest_corr',
+                            'condition',
+                            'accuracy_num')]
 
-## SVR-LSM (WPM - accuracy)
-# create new data frame with relevant variables 
-data_WPM_acc <- data_initial[c('RegistryCode',
-                                 'age',
-                                 'WSO',
-                                 'resolution',
-                                 'severity',
-                                 'condition',
-                                 'accuracy_num')]
-
-# Calculate mean of accuracy for each participant
-df_WPM_acc_summary <- data_WPM_acc %>% 
+## Calculate mean of accuracy for each participant
+df_acc_cond_summary <- data_acc_cond %>% 
   group_by(RegistryCode, condition) %>% 
   mutate(average_accuracy = mean(accuracy_num)) %>% 
   select(-accuracy_num) %>% 
   distinct()
 
-df_WPM_acc_summary <- df_WPM_acc_summary %>% 
+df_acc_cond_summary <- df_acc_cond_summary %>% 
   pivot_wider(names_from = condition, values_from = average_accuracy)
 
-# example way to filter df for specific subject
-id4086 <- filter(data_initial, RegistryCode == "4086")
-
-# extract data frame "data_WPM_acc"
-write.csv(df_WPM_acc_summary, here("./RData/data_WPM_acc.csv"), row.names = F)
+## extract data frame "data_acc_cond"
+write.csv(df_acc_cond_summary, here("./RData/data_acc_cond.csv"), row.names = F)
 ```
 
-# prepare df for RT
+# Create dataframe for response time (condition)
 ```{r}
-# remove incorrect trials from df
-data_RT <- filter(data_initial, accuracy == "correct")
+## remove incorrect trials from dataframe
+data_rt_cond <- filter(data_raw, accuracy == "correct")
 
-# create new data frame with relevant variables 
-data_RT_cond <- data_RT[c('RegistryCode',
-                                 'age',
-                                 'WSO',
-                                 'resolution',
-                                 'severity',
-                                 'condition',
-                                 'response_time')]
-
-# Calculate mean of accuracy for each participant
-df_RT_cond_summary <- data_RT_cond %>% 
-  group_by(RegistryCode, condition) %>% 
-  mutate(average_RT = mean(response_time)) %>% 
-  select(-response_time) %>% 
-  distinct()
-
-df_RT_cond_summary <- df_RT_cond_summary %>% 
-  pivot_wider(names_from = condition, values_from = average_RT)
-
-# extract data frame "data_WPM_acc"
-write.csv(df_WPM_acc_summary, here("./RData/data_WPM_acc.csv"), row.names = F)
-
-```
-
-
-
-
-
-```{r}
-## SVR-LSM (WPM - RT)
-# create covariate "FPM" - rt
-  FPM_rt <- filter(data_initial, condition == "FPM")
-  FPM <- FPM_rt$response_time
-  
-# filter data according to condition
-  data_WPM_rt <- filter(data_initial, condition == "WPM")
-
-# create new data frame with relevant variables 
-  data_WPM_rt <- data_WPM_rt[c('RegistryCode',
+## create data frame with relevant variables 
+data_rt_cond <- data_rt_cond[c('RegistryCode',
                                'age',
-                               'MSO',
+                               'WSO',
                                'resolution',
-                               'severity',
+                               'TokenTest_corr',
                                'condition',
                                'response_time')]
 
-# add covariate "FPM" to the data frame "data_WPM_rt"                                      
-  data_WPM_rt <- cbind(data_WPM_rt, FPM)
+## Calculate mean of response time for each participant
+df_rt_cond_summary <- data_rt_cond %>% 
+  group_by(RegistryCode, condition) %>% 
+  mutate(average_rt = mean(response_time)) %>% 
+  select(-response_time) %>% 
+  distinct()
 
-# extract data frame "data_WPM_rt"
-  write.csv(data_WPM_rt, here("./RData/data_WPM_rt.csv"), row.names=TRUE)
+df_rt_cond_summary <- df_rt_cond_summary %>% 
+  pivot_wider(names_from = condition, values_from = average_rt)
 
-
-## SVR-LSM (FPM - accuracy)
-# create covariate "WPM" - accuracy
-  WPM_acc <- filter(data_initial, condition == "WPM")
-  WPM <- WPM_acc$accuracy
-  
-# filter data according to condition
-  data_FPM_acc <- filter(data_initial, condition == "FPM")
-
-# create new data frame with relevant variables 
-  data_FPM_acc <- data_FPM_acc[c('RegistryCode',
-                                 'age',
-                                 'MSO',
-                                 'resolution',
-                                 'severity',
-                                 'condition',
-                                 'accuracy')]
-
-# add covariate "WPM" to the data frame "data_FPM_acc"                                      
-  data_FPM_acc <- cbind(data_FPM_acc, WPM)
-
-# extract data frame "data_FPM_acc"
-  write.csv(data_FPM_acc, here("./RData/data_FPM_acc.csv"), row.names=TRUE)
-  
-
-## SVR-LSM (FPM - RT)
-# create covariate "WPM" - rt
-  WPM_rt <- filter(data_initial, condition == "WPM")
-  WPM <- WPM_rt$response_time
-
-# filter data according to condition
-  data_FPM_rt <- filter(data_initial, condition == "FPM")
-
-# create new data frame with relevant variables 
-  data_FPM_rt <- data_FPM_rt[c('RegistryCode',
-                                 'age',
-                                 'MSO',
-                                 'resolution',
-                                 'severity',
-                                 'condition',
-                                 'response_time')]
-
-# add covariate "WPM" to the data frame "data_FPM_rt"                                      
-  data_FPM_rt <- cbind(data_FPM_rt, WPM)
-
-# extract data frame "data_FPM_rt"
-  write.csv(data_FPM_rt, here("./RData/data_FPM_rt.csv"), row.names=TRUE)
-  
-  
-## SVR-LSM (incongruent stimuli - accuracy)
-# create covariate "congruent" - accuracy 
-  congruent_acc <- filter(data_initial, congruency == "congruent")
-  congruent <- congruent_acc$accuracy
-  
-# filter data according to condition
-  data_incongruent_acc <- filter(data_initial, congruency == "incongruent")
-
-# create new data frame with relevant variables 
-  data_incongruent_acc <- data_incongruent_acc[c('RegistryCode',
-                                                 'age',
-                                                 'MSO',
-                                                 'resolution',
-                                                 'severity',
-                                                 'condition',
-                                                 'accuracy')]
-                                                 
-# add covariate "congruent" to the data frame "data_incongruent_acc"                                  
-  data_incongruent_acc <- cbind(data_incongruent_acc, congruent)
-
-# extract data frame "data_incongruent_acc"
-  write.csv(data_incongruent_acc, here("./RData/data_incongruent_acc.csv"), row.names=TRUE)
-  
-  
-## SVR-LSM (incongruent stimuli - RT)
-# create covariate "congruent" - rt 
-  congruent_rt <- filter(data_initial, congruency == "congruent")
-  congruent <- congruent_rt$response_time
-
-# filter data according to condition
-  data_incongruent_rt <- filter(data_initial, congruency == "incongruent")
-
-# create new data frame with relevant variables 
-  data_incongruent_rt <- data_incongruent_rt[c('RegistryCode',
-                                                 'age',
-                                                 'MSO',
-                                                 'resolution',
-                                                 'severity',
-                                                 'condition',
-                                                 'response_time')]
-                                                 
-# add covariate "congruent" to the data frame "data_incongruent_rt"                                  
-  data_incongruent_rt <- cbind(data_incongruent_rt, congruent)
-
-# extract data frame "data_incongruent_rt"
-  write.csv(data_incongruent_rt, here("./RData/data_incongruent_rt.csv"), row.names=TRUE)
+## extract data frame "data_rt_cond"
+write.csv(df_rt_cond_summary, here("./RData/data_rt_cond.csv"), row.names = F)
 ```
 
+# Create dataframe for accuracy (congruency)
+```{r}
+## create new data frame with relevant variables 
+data_acc_congr <- data_raw[c('RegistryCode',
+                             'age',
+                             'WSO',
+                             'resolution',
+                             'TokenTest_corr',
+                             'congruency',
+                             'accuracy_num')]
+
+## Calculate mean of accuracy for each participant
+df_acc_congr_summary <- data_acc_congr %>% 
+  group_by(RegistryCode, congruency) %>% 
+  mutate(average_accuracy = mean(accuracy_num)) %>% 
+  select(-accuracy_num) %>% 
+  distinct()
+
+df_acc_congr_summary <- df_acc_congr_summary %>% 
+  pivot_wider(names_from = congruency, values_from = average_accuracy)
+
+## extract data frame "data_acc_cond"
+write.csv(df_acc_congr_summary, here("./RData/data_acc_congr.csv"), row.names = F)
+```
+
+# Create dataframe for response time (congruency)
+```{r}
+## remove incorrect trials from dataframe
+data_rt_congr <- filter(data_raw, accuracy == "correct")
+
+## create new data frame with relevant variables 
+data_rt_congr <- data_rt_congr[c('RegistryCode',
+                                 'age',
+                                 'WSO',
+                                 'resolution',
+                                 'TokenTest_corr',
+                                 'congruency',
+                                 'response_time')]
+
+## Calculate mean of response time for each participant
+df_rt_congr_summary <- data_rt_congr %>% 
+  group_by(RegistryCode, congruency) %>% 
+  mutate(average_rt = mean(response_time)) %>% 
+  select(-response_time) %>% 
+  distinct()
+
+df_rt_congr_summary <- df_rt_congr_summary %>% 
+  pivot_wider(names_from = congruency, values_from = average_rt)
+
+## extract data frame "data_rt_cond"
+write.csv(df_rt_congr_summary, here("./RData/data_rt_congr.csv"), row.names = F)
+```
