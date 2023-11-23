@@ -7,10 +7,8 @@ output: html_document
 # packages
 ```{r}
 ## load packages
-   library(here)
-   library(psych)
-   library(tidyverse)
-   library(dplyr)
+   library(here)  
+   library(tidyverse) 
 ```
 
 # load data
@@ -31,11 +29,11 @@ rename(RegistryCode = ID)
 data_raw$test <- as.Date(data_raw$test, format = "%d.%m.%y")
 data_raw$onset <- as.Date(data_raw$onset, format = "%d.%m.%y")
 
-### Calculate 'WSO'
+### Calculate 'WSO' and define variable as a numeric data type
 data_raw$WSO <- difftime(data_raw$test, data_raw$onset, units = "weeks")
 data_raw$WSO <- as.numeric(data_raw$WSO)
 
-## remove NA trials --> participants were too slow to react on time or didn't react at all
+## remove NA trials (accuracy) --> participants were too slow to react on time or didn't react at all
 data_raw <- filter(data_raw, !(is.na(accuracy)))
 
 ## make numeric variable for accuracy
@@ -61,16 +59,17 @@ df_acc_cond_summary <- data_acc_cond %>%
   select(-accuracy_num) %>% 
   distinct()
 
+## Bring it into wide-format
 df_acc_cond_summary <- df_acc_cond_summary %>% 
   pivot_wider(names_from = condition, values_from = average_accuracy)
 
-## extract data frame "data_acc_cond"
+## Extract data frame "data_acc_cond"
 write.csv(df_acc_cond_summary, here("./RData/data_acc_cond.csv"), row.names = F)
 ```
 
 # Create dataframe for response time (condition)
 ```{r}
-## remove incorrect trials from dataframe
+## remove incorrect trials from data frame
 data_rt_cond <- filter(data_raw, accuracy == "correct")
 
 ## create data frame with relevant variables 
@@ -90,6 +89,7 @@ df_rt_cond_summary <- data_rt_cond %>%
   select(-response_time) %>% 
   distinct()
 
+## Bring it into wide-format
 df_rt_cond_summary <- df_rt_cond_summary %>% 
   pivot_wider(names_from = condition, values_from = average_rt)
 
@@ -116,10 +116,11 @@ df_acc_congr_summary <- data_acc_congr %>%
   select(-accuracy_num) %>% 
   distinct()
 
+## Bring it into wide-format
 df_acc_congr_summary <- df_acc_congr_summary %>% 
   pivot_wider(names_from = congruency, values_from = average_accuracy)
 
-## extract data frame "data_acc_cond"
+## extract data frame "data_acc_congr"
 write.csv(df_acc_congr_summary, here("./RData/data_acc_congr.csv"), row.names = F)
 ```
 
@@ -145,9 +146,10 @@ df_rt_congr_summary <- data_rt_congr %>%
   select(-response_time) %>% 
   distinct()
 
+## Bring it into wide-format
 df_rt_congr_summary <- df_rt_congr_summary %>% 
   pivot_wider(names_from = congruency, values_from = average_rt)
 
-## extract data frame "data_rt_cond"
+## extract data frame "data_rt_congr"
 write.csv(df_rt_congr_summary, here("./RData/data_rt_congr.csv"), row.names = F)
 ```
