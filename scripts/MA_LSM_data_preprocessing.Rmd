@@ -43,6 +43,27 @@ data_raw <- filter(data_raw, !(is.na(accuracy)))
 data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_raw$accuracy == "incorrect", 0, NA))
 ```
 
+# Create dataframe for accuracy (no distinction between conditions)
+```{r}
+## Create new data frame with relevant variables 
+data_acc <- data_raw[c('RegistryCode',
+                       'age',
+                       'WSO',
+                       'lesion_volume',
+                       'resolution',
+                       'TokenTest_corr',
+                       'accuracy_num')]
+
+## Calculate mean of accuracy for each participant
+df_acc_summary <- data_acc %>% 
+  group_by(RegistryCode) %>% 
+  mutate(average_accuracy = mean(accuracy_num)) %>% 
+  select(-accuracy_num) %>% 
+  distinct()
+
+## Extract data frame "data_acc_cond"
+write.csv(df_acc_summary, here("./RData/data_acc.csv"), row.names = F)
+```
 # Create dataframe for accuracy (condition)
 ```{r}
 ## Create new data frame with relevant variables 
