@@ -64,6 +64,7 @@ df_acc_summary <- data_acc %>%
 ## Extract data frame "data_acc_cond"
 write.csv(df_acc_summary, here("./RData/data_acc.csv"), row.names = F)
 ```
+
 # Create dataframe for accuracy (condition)
 ```{r}
 ## Create new data frame with relevant variables 
@@ -116,6 +117,13 @@ df_rt_cond_summary <- data_rt_cond %>%
 ## Bring it into wide-format
 df_rt_cond_summary <- df_rt_cond_summary %>% 
   pivot_wider(names_from = condition, values_from = average_rt)
+
+## log-transform reaction time
+### WPM
+df_rt_cond_summary$WPM_log <- log(df_rt_cond_summary$WPM)
+
+### FPM
+df_rt_cond_summary$FPM_log <- log(df_rt_cond_summary$FPM)
 
 ## extract data frame "data_rt_cond"
 write.csv(df_rt_cond_summary, here("./RData/data_rt_cond.csv"), row.names = F)
@@ -173,6 +181,14 @@ df_rt_congr_summary <- data_rt_congr %>%
 ## Bring it into wide-format
 df_rt_congr_summary <- df_rt_congr_summary %>% 
   pivot_wider(names_from = congruency, values_from = average_rt)
+
+## log-transform reaction time
+### congruent
+df_rt_congr_summary$congruent_log <- log(df_rt_congr_summary$congruent)
+
+### incongruent
+df_rt_congr_summary$incongruent_log <- log(df_rt_congr_summary$incongruent)
+
 
 ## extract data frame "data_rt_congr"
 write.csv(df_rt_congr_summary, here("./RData/data_rt_congr.csv"), row.names = F)
