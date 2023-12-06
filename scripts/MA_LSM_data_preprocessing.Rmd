@@ -118,7 +118,7 @@ df_rt_cond_summary <- data_rt_cond %>%
 df_rt_cond_summary <- df_rt_cond_summary %>% 
   pivot_wider(names_from = condition, values_from = average_rt)
 
-## log-transform reaction time
+## log-transform response time
 ### WPM
 df_rt_cond_summary$WPM_log <- log(df_rt_cond_summary$WPM)
 
@@ -182,7 +182,7 @@ df_rt_congr_summary <- data_rt_congr %>%
 df_rt_congr_summary <- df_rt_congr_summary %>% 
   pivot_wider(names_from = congruency, values_from = average_rt)
 
-## log-transform reaction time
+## log-transform response time
 ### congruent
 df_rt_congr_summary$congruent_log <- log(df_rt_congr_summary$congruent)
 
