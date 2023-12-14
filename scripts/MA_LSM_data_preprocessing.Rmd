@@ -65,8 +65,8 @@ df_acc_summary <- data_acc %>%
 ## Extract data frame "data_acc.csv"
 write.csv(df_acc_summary, here("./RData/data_acc.csv"), row.names = F)
 
-## Extract data frame "acc.xlsx"
-write_xlsx(df_acc_summary, here("./RData/acc.xlsx"))
+## Extract data frame "data_acc.xlsx"
+write_xlsx(df_acc_summary, here("./RData/data_acc.xlsx"))
 ```
 
 # Create dataframe for accuracy (condition)
@@ -95,8 +95,8 @@ df_acc_cond_summary <- df_acc_cond_summary %>%
 ## Extract data frame "data_acc_cond"
 write.csv(df_acc_cond_summary, here("./RData/data_acc_cond.csv"), row.names = F)
 
-## Extract data frame "acc_cond.xlsx"
-write_xlsx(df_acc_cond_summary, here("./RData/acc_cond.xlsx"))
+## Extract data frame "data_acc_cond.xlsx"
+write_xlsx(df_acc_cond_summary, here("./RData/data_acc_cond.xlsx"))
 ```
 
 # Create dataframe for response time (condition)
@@ -135,8 +135,8 @@ df_rt_cond_summary$FPM_log <- log(df_rt_cond_summary$FPM)
 ## Extract data frame "data_rt_cond"
 write.csv(df_rt_cond_summary, here("./RData/data_rt_cond.csv"), row.names = F)
 
-## Extract data frame "rt_cond.xlsx"
-write_xlsx(df_rt_cond_summary, here("./RData/rt_cond.xlsx"))
+## Extract data frame "data_rt_cond.xlsx"
+write_xlsx(df_rt_cond_summary, here("./RData/data_rt_cond.xlsx"))
 ```
 
 # Create dataframe for accuracy (congruency)
@@ -165,8 +165,8 @@ df_acc_congr_summary <- df_acc_congr_summary %>%
 ## Extract data frame "data_acc_congr"
 write.csv(df_acc_congr_summary, here("./RData/data_acc_congr.csv"), row.names = F)
 
-## Extract data frame "acc_congr.xlsx"
-write_xlsx(df_acc_congr_summary, here("./RData/acc_congr.xlsx"))
+## Extract data frame "data_acc_congr.xlsx"
+write_xlsx(df_acc_congr_summary, here("./RData/data_acc_congr.xlsx"))
 ```
 
 # Create dataframe for response time (congruency)
@@ -205,6 +205,6 @@ df_rt_congr_summary$incongruent_log <- log(df_rt_congr_summary$incongruent)
 ## Extract data frame "data_rt_congr"
 write.csv(df_rt_congr_summary, here("./RData/data_rt_congr.csv"), row.names = F)
 
-## Extract data frame "rt_congr.xlsx"
-write_xlsx(df_rt_congr_summary, here("./RData/rt_congr.xlsx"))
+## Extract data frame "data_rt_congr.xlsx"
+write_xlsx(df_rt_congr_summary, here("./RData/data_rt_congr.xlsx"))
 ```
