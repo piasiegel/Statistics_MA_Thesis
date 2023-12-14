@@ -1,5 +1,5 @@
 ---
-title: "MA_LSM_data_preprocessing"
+title: "MA_LSM_data_preprocessing_for_SVR-LSM-GUI"
 author: "Siegel"
 date: "2023-11-14"
 output: html_document
@@ -9,6 +9,7 @@ output: html_document
 ## load packages
    library(here)  
    library(tidyverse) 
+   library(writexl)
 ```
 
 # load data
@@ -61,8 +62,11 @@ df_acc_summary <- data_acc %>%
   select(-accuracy_num) %>% 
   distinct()
 
-## Extract data frame "data_acc_cond"
+## Extract data frame "data_acc.csv"
 write.csv(df_acc_summary, here("./RData/data_acc.csv"), row.names = F)
+
+## Extract data frame "NiiStat_acc.xlsx"
+write_xlsx(df_acc_summary, here("./RData/NiiStat_acc.xlsx"))
 ```
 
 # Create dataframe for accuracy (condition)
@@ -90,6 +94,9 @@ df_acc_cond_summary <- df_acc_cond_summary %>%
 
 ## Extract data frame "data_acc_cond"
 write.csv(df_acc_cond_summary, here("./RData/data_acc_cond.csv"), row.names = F)
+
+## Extract data frame "NiiStat_acc_cond.xlsx"
+write_xlsx(df_acc_cond_summary, here("./RData/NiiStat_acc_cond.xlsx"))
 ```
 
 # Create dataframe for response time (condition)
@@ -125,8 +132,11 @@ df_rt_cond_summary$WPM_log <- log(df_rt_cond_summary$WPM)
 ### FPM
 df_rt_cond_summary$FPM_log <- log(df_rt_cond_summary$FPM)
 
-## extract data frame "data_rt_cond"
+## Extract data frame "data_rt_cond"
 write.csv(df_rt_cond_summary, here("./RData/data_rt_cond.csv"), row.names = F)
+
+## Extract data frame "NiiStat_rt_cond.xlsx"
+write_xlsx(df_rt_cond_summary, here("./RData/NiiStat_rt_cond.xlsx"))
 ```
 
 # Create dataframe for accuracy (congruency)
@@ -152,8 +162,11 @@ df_acc_congr_summary <- data_acc_congr %>%
 df_acc_congr_summary <- df_acc_congr_summary %>% 
   pivot_wider(names_from = congruency, values_from = average_accuracy)
 
-## extract data frame "data_acc_congr"
+## Extract data frame "data_acc_congr"
 write.csv(df_acc_congr_summary, here("./RData/data_acc_congr.csv"), row.names = F)
+
+## Extract data frame "NiiStat_acc_congr.xlsx"
+write_xlsx(df_acc_congr_summary, here("./RData/NiiStat_acc_congr.xlsx"))
 ```
 
 # Create dataframe for response time (congruency)
@@ -189,7 +202,9 @@ df_rt_congr_summary$congruent_log <- log(df_rt_congr_summary$congruent)
 ### incongruent
 df_rt_congr_summary$incongruent_log <- log(df_rt_congr_summary$incongruent)
 
-
-## extract data frame "data_rt_congr"
+## Extract data frame "data_rt_congr"
 write.csv(df_rt_congr_summary, here("./RData/data_rt_congr.csv"), row.names = F)
+
+## Extract data frame "NiiStat_rt_congr.xlsx"
+write_xlsx(df_acc_cond_summary, here("./RData/NiiStat_rt_congr.xlsx"))
 ```
