@@ -206,5 +206,5 @@ df_rt_congr_summary$incongruent_log <- log(df_rt_congr_summary$incongruent)
 write.csv(df_rt_congr_summary, here("./RData/data_rt_congr.csv"), row.names = F)
 
 ## Extract data frame "NiiStat_rt_congr.xlsx"
-write_xlsx(df_acc_cond_summary, here("./RData/NiiStat_rt_congr.xlsx"))
+write_xlsx(df_rt_congr_summary, here("./RData/NiiStat_rt_congr.xlsx"))
 ```
