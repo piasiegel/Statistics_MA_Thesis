@@ -51,8 +51,6 @@ data_acc <- data_raw[c('RegistryCode',
                        'age',
                        'WSO',
                        'lesion_volume',
-                       'resolution',
-                       'TokenTest_corr',
                        'accuracy_num')]
 
 ## Calculate mean of accuracy for each participant
@@ -76,8 +74,6 @@ data_acc_cond <- data_raw[c('RegistryCode',
                             'age',
                             'WSO',
                             'lesion_volume',
-                            'resolution',
-                            'TokenTest_corr',
                             'condition',
                             'accuracy_num')]
 
@@ -109,8 +105,6 @@ data_rt_cond <- data_rt_cond[c('RegistryCode',
                                'age',
                                'WSO',
                                'lesion_volume',
-                               'resolution',
-                               'TokenTest_corr',
                                'condition',
                                'response_time')]
 
@@ -146,8 +140,6 @@ data_acc_congr <- data_raw[c('RegistryCode',
                              'age',
                              'WSO',
                              'lesion_volume',
-                             'resolution',
-                             'TokenTest_corr',
                              'congruency',
                              'accuracy_num')]
 
@@ -179,8 +171,6 @@ data_rt_congr <- data_rt_congr[c('RegistryCode',
                                  'age',
                                  'WSO',
                                  'lesion_volume',
-                                 'resolution',
-                                 'TokenTest_corr',
                                  'congruency',
                                  'response_time')]
 
