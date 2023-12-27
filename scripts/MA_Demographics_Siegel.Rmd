@@ -95,7 +95,7 @@ sd(df_demo_data_SV$AAT_SV)
 min(df_demo_data$age)
 max(df_demo_data$age)
 
-### MSO
+### WSO
 min(df_demo_data$WSO)
 max(df_demo_data$WSO)
 
