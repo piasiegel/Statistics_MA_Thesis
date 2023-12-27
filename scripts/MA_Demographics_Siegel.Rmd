@@ -26,44 +26,38 @@ data_raw <- all_files
 ```{r}
 ## Creating new data frame with relevant variables
 MA_demo_data <- data_raw[c('sub',
-                      'ID',
-                      'sex',
-                      'onset',
-                      'test',
-                      'age',
-                      'etiology',
-                      'hemi',
-                      'lesion_volume',
-                      'TokenTest_corr',
-                      'AAT_SV',
-                      'aphasia',
-                      'severity')]
+                           'ID',
+                           'sex',
+                           'onset',
+                           'test',
+                           'age',
+                           'etiology',
+                           'hemi',
+                           'lesion_volume',
+                           'TokenTest_corr',
+                           'AAT_SV',
+                           'aphasia',
+                           'severity')]
 
 ## Merging data from trial level to subject level
 df_demo_data <- MA_demo_data %>%
   group_by(ID) %>%
   distinct()
 
-## Create variable 'Months since Onset (MSO)'
+## Create as well as calculate variable 'Weeks since Onset (WSO)'
 ### Define variables 'test' and 'onset' as dates
 df_demo_data$test <- as.Date(df_demo_data$test, format = "%d.%m.%y")
 df_demo_data$onset <- as.Date(df_demo_data$onset, format = "%d.%m.%y")
 
-### Calculate 'Months since Onset'
-MSO <- interval(df_demo_data$test, df_demo_data$onset) %/% months(1)
-
-### Change the operator
-MSO_pos <- MSO
-MSO_pos[sapply(MSO_pos, is.numeric)] <- MSO_pos[sapply(MSO_pos, is.numeric)]*-1
-
-### Create new variable MSO
-df_demo_data$MSO <- MSO_pos
+### Calculate 'WSO' and define variable as a numeric data type
+df_demo_data$WSO <- difftime(df_demo_data$test, df_demo_data$onset, units = "weeks")
+df_demo_data$WSO <- as.numeric(df_demo_data$WSO)
 ```
 
 # Descriptive statistics - demographics
 ```{r}
 ## Describe data
-select(.data = df_demo_data, c(sex:severity))%>%describe(.)
+select(.data = df_demo_data, c(sex:WSO))%>%describe(.)
 
 ## Mean and SD of age, lesion volume, months since onset, TT and SV (AAT)
 ### Age
@@ -74,9 +68,9 @@ sd(df_demo_data$age)
 mean(df_demo_data$lesion_volume)
 sd(df_demo_data$lesion_volume)
 
-### Months since Onset (MSO)
-mean(df_demo_data$MSO)
-sd(df_demo_data$MSO)
+### Weeks since Onset (WSO)
+mean(df_demo_data$WSO)
+sd(df_demo_data$WSO)
 
 ### TT (AAT)
 #### Remove NA trials
@@ -93,14 +87,14 @@ df_demo_data_SV <- filter(df_demo_data, !(is.na(AAT_SV)))
 mean(df_demo_data_SV$AAT_SV)
 sd(df_demo_data_SV$AAT_SV)
 
-## Minimum and maximum of age and MSO
+## Minimum and maximum of age and WSO
 ### Age
 min(df_demo_data$age)
 max(df_demo_data$age)
 
 ### MSO
-min(df_demo_data$MSO)
-max(df_demo_data$MSO)
+min(df_demo_data$WSO)
+max(df_demo_data$WSO)
 
 ## Frequency table (absolute & relative)
 ### Sex
