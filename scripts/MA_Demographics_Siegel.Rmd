@@ -52,6 +52,9 @@ df_demo_data$onset <- as.Date(df_demo_data$onset, format = "%d.%m.%y")
 ### Calculate 'WSO' and define variable as a numeric data type
 df_demo_data$WSO <- difftime(df_demo_data$test, df_demo_data$onset, units = "weeks")
 df_demo_data$WSO <- as.numeric(df_demo_data$WSO)
+
+### round to two decimal places 
+df_demo_data$WSO <- round(df_demo_data$WSO, 2)
 ```
 
 # Descriptive statistics - demographics
