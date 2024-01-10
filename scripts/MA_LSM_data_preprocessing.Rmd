@@ -7,14 +7,14 @@ output: html_document
 # packages
 ```{r}
 ## load packages
-   library(here)  
-   library(tidyverse) 
+library(here)  
+library(tidyverse) 
 ```
 
 # load data
 ```{r}
 here::here()
-load(here("./RData/all_files_11_2023.RData"))
+load(here::here("RData/all_files_11_2023.RData"))
 data_raw <- all_files
 ```
 
@@ -22,7 +22,7 @@ data_raw <- all_files
 ```{r}
 ## rename "ID" into "RegistryCode"
 data_raw <- data_raw %>% 
-rename(RegistryCode = ID)
+  rename(RegistryCode = ID)
 
 ## add "sub" (subject) to the RegistryCode (ID)
 data_raw$RegistryCode <- paste("sub", data_raw$RegistryCode)
@@ -96,9 +96,18 @@ df_rt_cond_summary <- data_rt_cond %>%
 df_rt_cond_summary <- df_rt_cond_summary %>% 
   pivot_wider(names_from = condition, values_from = average_rt)
 
+# log-transform 
+df_rt_cond_summary$WPM_log <- log(df_rt_cond_summary$WPM)
+
 ## extract data frame "data_rt_cond"
 write.csv(df_rt_cond_summary, here("./RData/data_rt_cond.csv"), row.names = F)
 ```
+
+```{r}
+# enter log-transformation
+# enter df for complete semantic analysis
+```
+
 
 # Create dataframe for accuracy (congruency)
 ```{r}
