@@ -362,7 +362,7 @@ df_behav <- df_behav %>%
 df_behav$correct <- as.factor(df_behav$correct)
 
 #---- Model ----
-m_acc1 <- glmer(correct ~ condition * congruency + run + Lesion_volume_z + (1 + run + condition + congruency|sub) + (1|stimulus_audio), data = df_behav, family = binomial(link = "logit"), glmerControl(optimizer = "bobyqa")) # model with interaction in random slopes is singular
+m_acc1 <- glmer(correct ~ condition * congruency + run + Lesion_volume_z + (1 + run + condition + congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_behav, family = binomial(link = "logit"), glmerControl(optimizer = "bobyqa")) # model with interaction in random slopes is singular
 
 save(m_acc1, file = here::here(paste0("RData/m_acc_", today, ".RData")))
 
