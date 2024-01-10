@@ -1,0 +1,2 @@
+CAVE:
+There was a mix-up with the button assignment for the first 20 participants with even numbers (e.g., 002, 004, etc.). In these participants, correct reactions need to be read as "incorrect" and incorrect reactions as "correct". The script "behavioral_analysis.Rmd" fixes this mix-up in the beginning of the script. Just be aware.
