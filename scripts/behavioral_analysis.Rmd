@@ -30,6 +30,7 @@ library(fitdistrplus)
 library(see)
 library(cowplot)
 library(performance)
+library(sjPlot)
 ```
 
 
@@ -92,7 +93,7 @@ error_files <- error_files %>%
 
 error_files$accuracy <- error_files$accuracy_new
 error_files <- error_files %>% 
-  select(-c("accuracy_new"))
+  dplyr::select(-c("accuracy_new"))
 
 
 
@@ -159,14 +160,14 @@ df_acc <- all_files %>%
 
 
 #---- read in demographic and neuropsychological data ----
-df_npsy <- read.table(here::here("raw_data/Npsy_data.txt"), header = T, sep = "\t")
+df_npsy <- read.table(here::here("raw_data/Npsy_data_01_24.txt"), header = T, sep = "\t")
 df_npsy$sub <- str_pad(df_npsy$sub, width = 3, side = "left", pad = "0")
 
 #---- merge dfs ----
 all_files <- full_join(all_files, df_npsy)
 
 # sort columns
-all_files <- all_files[,c(1,21:29,2:20,30:46)]
+all_files <- all_files[,c(1,21:26,36:38,2:20,27:35,39:51)]
 
 # save df
 save(all_files, file = 'RData/all_files_01_2024.RData')
@@ -235,8 +236,8 @@ lattice::densityplot(log(df_RT$response_time))
 # relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
 df_RT$congruency <- factor(df_RT$congruency, levels = c("congruent", "incongruent"))
-df_RT$age_z <- scale(df_RT$age, scale = T)
-df_RT$lesion_volume_z <- scale(df_RT$lesion_volume, scale = T)
+df_RT$age_z <- scale(df_RT$Age, scale = T)
+df_RT$lesion_volume_z <- scale(df_RT$Lesion_volume, scale = T)
 
 #---- Simple coding ----
 # create a Simple Coding scheme
@@ -260,7 +261,7 @@ summary(m_RT1)
 m_RT_res <- drop1(m_RT1, test = "Chisq")
 save(m_RT_res, file = here::here(paste0("RData/m_RT_res", today, ".RData")))
 
-RT_int <- plot(ggemmeans(m_RT1, terms = c("condition", "congruency")), collapse.group = "sub") +
+RT_int <- plot(ggemmeans(m_RT1, terms = c("condition", "congruency"))) +
   scale_colour_manual(values = palet_task) +
   ylab("Reaction time in ms") +
   apatheme +
@@ -271,7 +272,7 @@ RT_int <- plot(ggemmeans(m_RT1, terms = c("condition", "congruency")), collapse.
 RT_int
 save_plot(RT_int, file = here::here(paste0("Plots/m_RT_cond_cong_", today, ".pdf")))
 
-RT_lesionVol <- plot(ggemmeans(m_RT1, terms = c("Lesion_volume_z")), limit.range = T, collapse.group = "sub") +
+RT_lesionVol <- plot(ggemmeans(m_RT1, terms = c("lesion_volume_z")), limit.range = T) +
   ylab("Reaction time in ms") +
   xlab("Standardized lesion volume") +
   apatheme +
@@ -280,7 +281,7 @@ RT_lesionVol <- plot(ggemmeans(m_RT1, terms = c("Lesion_volume_z")), limit.range
 RT_lesionVol
 save_plot(RT_lesionVol, file = here::here(paste0("Plots/m_RT_lesionVol_", today, ".pdf")))
 
-RT_run <- plot(ggemmeans(m_RT1, terms = c("run")), collapse.group = "sub") +
+RT_run <- plot(ggemmeans(m_RT1, terms = c("run"))) +
   ylab("Reaction time in ms") +
   xlab("Run") +
   apatheme +
@@ -288,6 +289,9 @@ RT_run <- plot(ggemmeans(m_RT1, terms = c("run")), collapse.group = "sub") +
         legend.title = element_blank())
 RT_run
 save_plot(RT_run, file = here::here(paste0("Plots/m_RT_run_", today, ".pdf")))
+
+#---- create table output for model
+tab_model(m_RT1)
 ```
 
 
@@ -308,7 +312,7 @@ df_behav$condition <- factor(df_behav$condition, levels = c("WPM", "FPM"))
 
 # Create summary df for accuracy
 summary_acc <- df_behav %>% 
-  group_by(sub, congruency, condition) %>% 
+  group_by(sub, condition) %>% 
   summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
 
 
@@ -367,7 +371,7 @@ summary(m_acc1)
 m_acc_res <- drop1(m_acc1, test = "Chisq")
 save(m_acc_res, file = here::here(paste0("RData/m_acc_res", today, ".RData")))
 
-Acc_int <- plot(ggemmeans(m_acc1, terms = c("condition", "congruency")), collapse.group = "sub") +
+Acc_int <- plot(ggemmeans(m_acc1, terms = c("condition", "congruency"))) +
   scale_colour_manual(values = palet_task) +
   coord_cartesian(ylim = c(0.5, 1)) +
   ylab("Accuracy") +
@@ -378,13 +382,4 @@ Acc_int <- plot(ggemmeans(m_acc1, terms = c("condition", "congruency")), collaps
         legend.text=element_text(size=10))
 Acc_int
 save_plot(Acc_int, file = here::here(paste0("Plots/m_Acc_cond_cong_", today, ".pdf")))
-
-Acc_lesionVol <- plot(ggemmeans(m_acc1, terms = c("Lesion_volume_z[all]")), limit.range = T) +
-  coord_cartesian(ylim = c(0.4, 1)) +
-  ylab("Accuracy") +
-  xlab("Standardized lesion volume") +
-  apatheme +
-  theme(legend.position = "none")
-Acc_lesionVol
-save_plot(Acc_lesionVol, file = here::here(paste0("Plots/m_Acc_lesionVol_", today, ".pdf")))
 ```
