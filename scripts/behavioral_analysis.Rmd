@@ -20,6 +20,7 @@ options(scipen = 999)
 library(here)
 library(plyr)
 library(tidyverse)
+library(dplyr)
 library(ggplot2)
 library(lme4)
 library(emmeans)
@@ -53,10 +54,48 @@ std.error <- function(x, na.rm = TRUE){sd(x, na.rm = TRUE)/sqrt(length(x[!is.na(
 # Load data
 ```{r Load R data}
 # full df including demographic and npsy dara
-load(here::here("RData/all_files_11_2023.RData"))
+load(here::here("RData/all_files_01_2024.RData"))
 ```
 
 ```{r Read in data, message=FALSE, include=FALSE, eval=FALSE}
+# There was a mix-up with the button assignments for the first 20 participants with even participant numbers (e.g., 002, 004, etc.). This needs to be fixed first since accuracy was assigned wrong in these participants. That's why we're first reading in the files of these 20 participants, change accuracy labels, then read in the other participants and finally merge both data frames. 
+# Read in data for files with errors
+path = here::here("raw_data/subsample_even_participants_till20/")
+
+error_files <- ""
+seeds <- list.files(path = path, pattern = "MDN_APH_")
+
+for (i in 1:length(seeds)) {
+  filedir <- seeds[i]
+  seed <- read.table(paste0(path, "/", filedir), skip = 7, header = T, sep = "\t", na.strings = "NaN")
+  if ("correctness" %in% colnames(seed)) {
+  seed <- seed %>% 
+    dplyr::rename(congruency = correctness)
+  }
+  infos <- read.table(paste0(path, "/", filedir), fill = T)
+  seed$sub <- infos$V2[infos$V1 == "Subject:"]
+  seed$run <- infos$V2[infos$V1 == "Run:"]
+  seed$buttons <- infos$V2[infos$V1 == "Buttons:"]
+  error_files <- rbind(error_files, seed)
+}
+
+error_files <- error_files[-1,]     # delete first row of df since it's only NAs
+
+# now switch accuracy information in this df: labelled "incorrect" was actually correct and labelled "correct" was actually incorrect 
+# --> reason for this mix-up was due to wrong button assignments: Presentation thought we were switching correct and incorrect buttons across participants when in fact we were not
+error_files <- error_files %>% 
+  mutate(accuracy_new = case_when(
+    accuracy == "correct" ~ "incorrect",
+    accuracy == "incorrect" ~ "correct", 
+    NA ~ NA
+  ))
+
+error_files$accuracy <- error_files$accuracy_new
+error_files <- error_files %>% 
+  select(-c("accuracy_new"))
+
+
+
 # Read in data
 path = here::here("raw_data/")
 
@@ -68,7 +107,7 @@ for (i in 1:length(seeds)) {
   seed <- read.table(paste0(path, "/", filedir), skip = 7, header = T, sep = "\t", na.strings = "NaN")
   if ("correctness" %in% colnames(seed)) {
   seed <- seed %>% 
-    rename(congruency = correctness)
+    dplyr::rename(congruency = correctness)
   }
   infos <- read.table(paste0(path, "/", filedir), fill = T)
   seed$sub <- infos$V2[infos$V1 == "Subject:"]
@@ -79,11 +118,15 @@ for (i in 1:length(seeds)) {
 
 
 all_files <- all_files[-1,]     # delete first row of df since it's only NAs
+
+# now merge all_files with error_files to have complete df
+all_files <- full_join(all_files, error_files)
+
 all_files$time_audio <- as.numeric(all_files$time_audio)
 all_files$length_audio <- as.numeric(all_files$length_audio)
 all_files$time_picture <- as.numeric(all_files$time_picture)
 all_files$response_time <- as.numeric(all_files$response_time)
-all_files <- rename(all_files, 
+all_files <- dplyr::rename(all_files, 
                     response_time_absolute = response_time,
                     response_time = absolute_response_time)
 all_files$response_time_absolute <- as.numeric(all_files$response_time_absolute)
@@ -110,9 +153,10 @@ df_na <- all_files %>%
 
 
 ## Count errors
-df_err <- all_files %>% 
-  group_by(sub, run, condition) %>% 
+df_acc <- all_files %>% 
+  group_by(sub, condition) %>% 
   summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
+
 
 #---- read in demographic and neuropsychological data ----
 df_npsy <- read.table(here::here("raw_data/Npsy_data.txt"), header = T, sep = "\t")
@@ -125,7 +169,7 @@ all_files <- full_join(all_files, df_npsy)
 all_files <- all_files[,c(1,21:29,2:20,30:46)]
 
 # save df
-save(all_files, file = 'RData/all_files_11_2023.RData')
+save(all_files, file = 'RData/all_files_01_2024.RData')
 ```
 
 # RT analysis
@@ -139,8 +183,9 @@ df_RT <- df_RT[df_RT$accuracy != "incorrect", ]
 
 df_RT$response_time <- as.numeric(df_RT$response_time)
 
-# remove RTs before picture was shown (equals rt = 0)
+# remove RTs before picture was shown (equals rt = 0) and RTs below 100 ms
 df_RT <- df_RT[!(df_RT$response_time_absolute < df_RT$time_picture),]
+df_RT <- df_RT[!(df_RT$response_time < 100),]
 ```
 
 ## Plot
@@ -190,8 +235,8 @@ lattice::densityplot(log(df_RT$response_time))
 # relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
 df_RT$congruency <- factor(df_RT$congruency, levels = c("congruent", "incongruent"))
-df_RT$age_z <- scale(df_RT$Age, scale = T)
-df_RT$Lesion_volume_z <- scale(df_RT$Lesion_volume, scale = T)
+df_RT$age_z <- scale(df_RT$age, scale = T)
+df_RT$lesion_volume_z <- scale(df_RT$lesion_volume, scale = T)
 
 #---- Simple coding ----
 # create a Simple Coding scheme
@@ -206,13 +251,13 @@ contrasts(df_RT$condition) <- my.simple
 contrasts(df_RT$congruency) <- my.simple
 
 #---- fit model ----
-m_RT1 <- lmer(log(response_time) ~ condition * congruency + run + Lesion_volume_z + age_z + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F, lmerControl(optimizer = "bobyqa"))
+m_RT1 <- lmer(log(response_time) ~ condition * congruency + run + lesion_volume_z + age_z + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F, lmerControl(optimizer = "bobyqa"))
 
 save(m_RT1, file = here::here(paste0("RData/m_RT_", today, ".RData")))
 
 summary(m_RT1)
 
-m_RT_res <- drop1(m_RT2, test = "Chisq")
+m_RT_res <- drop1(m_RT1, test = "Chisq")
 save(m_RT_res, file = here::here(paste0("RData/m_RT_res", today, ".RData")))
 
 RT_int <- plot(ggemmeans(m_RT1, terms = c("condition", "congruency")), collapse.group = "sub") +
@@ -263,7 +308,7 @@ df_behav$condition <- factor(df_behav$condition, levels = c("WPM", "FPM"))
 
 # Create summary df for accuracy
 summary_acc <- df_behav %>% 
-  group_by(sub, condition, congruency) %>% 
+  group_by(sub, congruency, condition) %>% 
   summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
 
 
