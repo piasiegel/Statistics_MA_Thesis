@@ -10,6 +10,7 @@ output: html_document
    library(here)  
    library(tidyverse) 
    library(writexl)
+   library(dplyr)
 ```
 
 # load data
@@ -66,6 +67,26 @@ df_acc_summary <- data_acc %>%
 
 ## Extract data frame "data_acc.csv"
 write.csv(df_acc_summary, here("./RData/data_acc.csv"), row.names = F)
+```
+
+# Create .csv-dataframe for rt (no distinction between conditions; SVR-LSM)
+```{r}
+## Create new data frame with relevant variables 
+data_rt <- data_raw[c('RegistryCode',
+                       'Age',
+                       'WSO',
+                       'Lesion_volume',
+                       'response_time')]
+
+## Calculate mean of response time for each participant
+df_rt_summary <- data_rt %>% 
+  group_by(RegistryCode) %>% 
+  mutate(average_rt = mean(response_time)) %>% 
+  select(-response_time) %>% 
+  distinct()
+
+## Extract data frame "data_rt.csv"
+write.csv(df_rt_summary, here("./RData/data_rt.csv"), row.names = F)
 ```
 
 # Create .csv-dataframe for accuracy (condition; SVR-LSM)
