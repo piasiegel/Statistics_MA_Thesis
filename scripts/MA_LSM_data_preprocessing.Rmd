@@ -10,6 +10,7 @@ output: html_document
    library(here)  
    library(tidyverse) 
    library(writexl)
+   library(dplyr)
 ```
 
 # load data
@@ -46,12 +47,20 @@ data_raw <- data_raw[!(data_raw$response_time < 100),]
 
 ## make numeric variable for accuracy
 data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_raw$accuracy == "incorrect", 0, NA))
+
+# remove RTs before picture was shown (equals rt = 0) and RTs below 100 ms
+data_raw <- data_raw[!(data_raw$response_time_absolute < data_raw$time_picture),]
+data_raw <- data_raw[!(data_raw$response_time < 100),]
 ```
 
 # Create .csv-dataframe for accuracy (no distinction between conditions; SVR-LSM)
 ```{r}
 ## Create new data frame with relevant variables 
+<<<<<<< HEAD
 data_acc <- data_raw[c("sub", 'RegistryCode',
+=======
+data_acc <- data_raw[c('RegistryCode',
+>>>>>>> fd0c28dc50e0cc02297774666dc501e5d63ec58d
                        'Age',
                        'WSO',
                        'Lesion_volume',
@@ -68,10 +77,34 @@ df_acc_summary <- data_acc %>%
 write.csv(df_acc_summary, here("./RData/data_acc.csv"), row.names = F)
 ```
 
+# Create .csv-dataframe for rt (no distinction between conditions; SVR-LSM)
+```{r}
+## Create new data frame with relevant variables 
+data_rt <- data_raw[c('RegistryCode',
+                       'Age',
+                       'WSO',
+                       'Lesion_volume',
+                       'response_time')]
+
+## Calculate mean of response time for each participant
+df_rt_summary <- data_rt %>% 
+  group_by(RegistryCode) %>% 
+  mutate(average_rt = mean(response_time)) %>% 
+  select(-response_time) %>% 
+  distinct()
+
+## Extract data frame "data_rt.csv"
+write.csv(df_rt_summary, here("./RData/data_rt.csv"), row.names = F)
+```
+
 # Create .csv-dataframe for accuracy (condition; SVR-LSM)
 ```{r}
 ## Create new data frame with relevant variables 
+<<<<<<< HEAD
 data_acc_cond_SVR <- data_raw[c("sub",'RegistryCode',
+=======
+data_acc_cond_SVR <- data_raw[c('RegistryCode',
+>>>>>>> fd0c28dc50e0cc02297774666dc501e5d63ec58d
                                 'Age',
                                 'WSO',
                                 'Lesion_volume',
@@ -97,7 +130,7 @@ write.csv(df_acc_cond_summary_SVR, here("./RData/data_acc_cond.csv"), row.names 
 ```{r}
 ## Create new data frame with relevant variables 
 data_acc_cond_NiiStat <- data_raw[c('RegistryCode',
-                                    'age',
+                                    'Age',
                                     'WSO',
                                     'condition',
                                     'accuracy_num')]
@@ -124,9 +157,9 @@ data_rt_cond_SVR <- filter(data_raw, accuracy == "correct")
 
 ## create data frame with relevant variables 
 data_rt_cond_SVR <- data_rt_cond_SVR[c('RegistryCode',
-                                       'age',
+                                       'Age',
                                        'WSO',
-                                       'lesion_volume',
+                                       'Lesion_volume',
                                        'condition',
                                        'response_time')]
 
@@ -159,7 +192,7 @@ data_rt_cond_NiiStat <- filter(data_raw, accuracy == "correct")
 
 ## create data frame with relevant variables 
 data_rt_cond_NiiStat <- data_rt_cond_NiiStat[c('RegistryCode',
-                                               'age',
+                                               'Age',
                                                'WSO',
                                                'condition',
                                                'response_time')]
@@ -184,7 +217,7 @@ df_rt_cond_summary_NiiStat$FPM_log <- log(df_rt_cond_summary_NiiStat$FPM)
 
 ## create data frame with only log rt 
 df_rt_cond_summary_NiiStat <- df_rt_cond_summary_NiiStat[c('RegistryCode',
-                                                               'age',
+                                                               'Age',
                                                                'WSO',
                                                                'WPM_log',
                                                                'FPM_log')]
@@ -236,9 +269,9 @@ write.csv(df_rt_cond_summary_SVR, here("./RData/data_rt_cond_subsample.csv"), ro
 ```{r}
 ## create new data frame with relevant variables 
 data_acc_congr_SVR <- data_raw[c('RegistryCode',
-                                 'age',
+                                 'Age',
                                  'WSO',
-                                 'lesion_volume',
+                                 'Lesion_volume',
                                  'congruency',
                                  'accuracy_num')]
 
@@ -261,7 +294,7 @@ write.csv(df_acc_congr_summary_SVR, here("./RData/data_acc_congr.csv"), row.name
 ```{r}
 ## create new data frame with relevant variables 
 data_acc_congr_NiiStat <- data_raw[c('RegistryCode',
-                                     'age',
+                                     'Age',
                                      'WSO',
                                      'congruency',
                                      'accuracy_num')]
@@ -288,9 +321,9 @@ data_rt_congr_SVR <- filter(data_raw, accuracy == "correct")
 
 ## create new data frame with relevant variables 
 data_rt_congr_SVR <- data_rt_congr_SVR[c('RegistryCode',
-                                         'age',
+                                         'Age',
                                          'WSO',
-                                         'lesion_volume',
+                                         'Lesion_volume',
                                          'congruency',
                                          'response_time')]
 
@@ -323,7 +356,7 @@ data_rt_congr_NiiStat <- filter(data_raw, accuracy == "correct")
 
 ## create new data frame with relevant variables 
 data_rt_congr_NiiStat <- data_rt_congr_NiiStat[c('RegistryCode',
-                                                 'age',
+                                                 'Age',
                                                  'WSO',
                                                  'congruency',
                                                  'response_time')]
@@ -348,7 +381,7 @@ df_rt_congr_summary_NiiStat$incongruent_log <- log(df_rt_congr_summary_NiiStat$i
 
 ## create data frame with only log rt 
 df_rt_congr_summary_NiiStat <- df_rt_congr_summary_NiiStat[c('RegistryCode',
-                                                               'age',
+                                                               'Age',
                                                                'WSO',
                                                                'congruent_log',
                                                                'incongruent_log')]

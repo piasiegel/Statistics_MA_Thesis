@@ -1,0 +1,124 @@
+---
+title: "Clinical_assessment"
+author: "Siegel"
+date: "2024-01-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# packages
+```{r}
+## load packages
+   library(here)  
+   library(tidyverse) 
+   library(writexl)
+```
+
+# load data
+```{r}
+here::here()
+load(here::here("RData/all_files_11_2023.RData"))
+data_raw <- all_files
+```
+
+# Data cleaning and preparing data frame
+```{r}
+## Creating new data frame with relevant variables
+MA_clinical_data <- data_raw[c('sub',
+                               'ID',
+                               'TokenTest_corr',
+                               'AAT_SV',
+                               'LEMO_V15',
+                               'Phasic_Alertness',
+                               'Phasic_Alertness_T',
+                               'RT_GoNoGo_Avg_ms',
+                               'Acc_GoNoGo',
+                               'Err_GoNoGo',
+                               'BOSU.NVST')]
+
+## Merging data from trial level to subject level
+df_clinical_data <- MA_clinical_data %>%
+  group_by(ID) %>%
+  distinct()
+
+## Extract data frame "df_clinical_data.xlsx"
+write_xlsx(df_clinical_data, "/Users/piamariesiegel/Desktop/Master Studium/Masterarbeit/Statistics_MA_Thesis/RData/df_clinical_data.xlsx")
+````
+
+# Descriptive statistics
+```{r}
+## Mean, SD and range
+### AAT - TokenTest
+#### Remove NA trials
+df_clinical_data_TT <- filter(df_clinical_data, !(is.na(TokenTest_corr)))
+
+mean(df_clinical_data_TT$TokenTest_corr)
+sd(df_clinical_data_TT$TokenTest_corr)
+range(df_clinical_data_TT$TokenTest_corr)
+
+### AAT - language comprehension
+#### Remove NA trials
+df_clinical_data_SV <- filter(df_clinical_data, !(is.na(AAT_SV)))
+
+mean(df_clinical_data_SV$AAT_SV)
+sd(df_clinical_data_SV$AAT_SV)
+range(df_clinical_data_SV$AAT_SV)
+
+### LEMO
+#### Remove NA trials
+df_clinical_data_LEMO <- filter(df_clinical_data, !(is.na(LEMO_V15)))
+
+mean(df_clinical_data_LEMO$LEMO_V15)
+sd(df_clinical_data_LEMO$LEMO_V15)
+range(df_clinical_data_LEMO$LEMO_V15)
+
+### NVST
+#### Remove NA trials
+df_clinical_data_NVST <- filter(df_clinical_data, !(is.na(BOSU.NVST)))
+
+mean(df_clinical_data_NVST$BOSU.NVST)
+sd(df_clinical_data_NVST$BOSU.NVST)
+range(df_clinical_data_NVST$BOSU.NVST)
+
+### Phasic Alertness
+#### Index
+df_phasic_alertness_index <- filter(df_clinical_data, !(is.na(Phasic_Alertness)))
+
+mean(df_phasic_alertness_index$Phasic_Alertness)
+sd(df_phasic_alertness_index$Phasic_Alertness)
+range(df_phasic_alertness_index$Phasic_Alertness)
+
+#### T-value
+df_phasic_alertness_T <- filter(df_clinical_data, !(is.na(Phasic_Alertness_T)))
+
+mean(df_phasic_alertness_T$Phasic_Alertness_T)
+sd(df_phasic_alertness_T$Phasic_Alertness_T)
+range(df_phasic_alertness_T$Phasic_Alertness_T)
+
+### Go/NoGO
+#### RT (ms)
+##### Remove NA trials
+df_clinical_data_rt <- filter(df_clinical_data, !(is.na(RT_GoNoGo_Avg_ms)))
+
+mean(df_clinical_data_rt$RT_GoNoGo_Avg_ms)
+sd(df_clinical_data_rt$RT_GoNoGo_Avg_ms)
+range(df_clinical_data_rt$RT_GoNoGo_Avg_ms)
+
+
+#### Accuracy
+##### Remove NA trials
+df_clinical_data_acc <- filter(df_clinical_data, !(is.na(Acc_GoNoGo)))
+
+mean(df_clinical_data_acc$Acc_GoNoGo)
+sd(df_clinical_data_acc$Acc_GoNoGo)
+range(df_clinical_data_acc$Acc_GoNoGo)
+
+#### Error
+##### Remove NA trials
+df_clinical_data_err <- filter(df_clinical_data, !(is.na(Err_GoNoGo)))
+
+mean(df_clinical_data_err$Err_GoNoGo)
+sd(df_clinical_data_err$Err_GoNoGo)
+range(df_clinical_data_err$Err_GoNoGo)
