@@ -86,15 +86,16 @@ error_files <- error_files[-1,]     # delete first row of df since it's only NAs
 # --> reason for this mix-up was due to wrong button assignments: Presentation thought we were switching correct and incorrect buttons across participants when in fact we were not
 error_files <- error_files %>% 
   mutate(accuracy_new = case_when(
-    accuracy == "correct" ~ "incorrect",
-    accuracy == "incorrect" ~ "correct", 
+    congruency == "correct" & button_response == 2 ~ "correct",
+    congruency == "correct" & button_response == 1 ~ "incorrect",
+    congruency == "incorrect" & button_response == 2 ~ "incorrect",
+    congruency == "incorrect" & button_response == 1 ~ "correct",
     NA ~ NA
   ))
 
 error_files$accuracy <- error_files$accuracy_new
 error_files <- error_files %>% 
   dplyr::select(-c("accuracy_new"))
-
 
 
 # Read in data
@@ -154,9 +155,9 @@ df_na <- all_files %>%
 
 
 ## Count errors
-df_acc <- all_files %>% 
-  group_by(sub, condition) %>% 
-  summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
+#df_acc <- all_files %>% 
+#  group_by(sub, condition) %>% 
+#  summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
 
 
 #---- read in demographic and neuropsychological data ----
@@ -261,16 +262,20 @@ summary(m_RT1)
 m_RT_res <- drop1(m_RT1, test = "Chisq")
 save(m_RT_res, file = here::here(paste0("RData/m_RT_res", today, ".RData")))
 
-RT_int <- plot(ggemmeans(m_RT1, terms = c("condition", "congruency"))) +
+# explore interaction
+RT_emm <- emmeans(m_RT1, pairwise ~ congruency | condition, adjust = "holm", type = "response")
+
+# plot model results
+RT_int <- plot(ggemmeans(m_RT1, terms = c("condition")), collapse_group = c("run", "sub")) +
   scale_colour_manual(values = palet_task) +
   ylab("Reaction time in ms") +
   apatheme +
   theme(axis.title.x = element_blank(),
-        legend.position = "bottom",
+        legend.position = "none",
         legend.title = element_blank(),
         legend.text=element_text(size=10))
 RT_int
-save_plot(RT_int, file = here::here(paste0("Plots/m_RT_cond_cong_", today, ".pdf")))
+save_plot(RT_int, file = here::here(paste0("Plots/m_RT_cond_cong_", today, ".png")))
 
 RT_lesionVol <- plot(ggemmeans(m_RT1, terms = c("lesion_volume_z")), limit.range = T) +
   ylab("Reaction time in ms") +
@@ -371,6 +376,10 @@ summary(m_acc1)
 m_acc_res <- drop1(m_acc1, test = "Chisq")
 save(m_acc_res, file = here::here(paste0("RData/m_acc_res", today, ".RData")))
 
+## explore direction of interaction
+acc_emm <- emmeans(m_acc1, pairwise ~ congruency | condition, adjust = "holm")
+
+## plot model output
 Acc_int <- plot(ggemmeans(m_acc1, terms = c("condition", "congruency"))) +
   scale_colour_manual(values = palet_task) +
   coord_cartesian(ylim = c(0.5, 1)) +
