@@ -56,11 +56,7 @@ data_raw <- data_raw[!(data_raw$response_time < 100),]
 # Create .csv-dataframe for accuracy (no distinction between conditions; SVR-LSM)
 ```{r}
 ## Create new data frame with relevant variables 
-<<<<<<< HEAD
-data_acc <- data_raw[c("sub", 'RegistryCode',
-=======
 data_acc <- data_raw[c('RegistryCode',
->>>>>>> fd0c28dc50e0cc02297774666dc501e5d63ec58d
                        'Age',
                        'WSO',
                        'Lesion_volume',
@@ -100,11 +96,7 @@ write.csv(df_rt_summary, here("./RData/data_rt.csv"), row.names = F)
 # Create .csv-dataframe for accuracy (condition; SVR-LSM)
 ```{r}
 ## Create new data frame with relevant variables 
-<<<<<<< HEAD
-data_acc_cond_SVR <- data_raw[c("sub",'RegistryCode',
-=======
 data_acc_cond_SVR <- data_raw[c('RegistryCode',
->>>>>>> fd0c28dc50e0cc02297774666dc501e5d63ec58d
                                 'Age',
                                 'WSO',
                                 'Lesion_volume',
