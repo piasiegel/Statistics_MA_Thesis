@@ -23,22 +23,26 @@ data_raw <- all_files
 ```{r}
 ## rename "ID" into "RegistryCode"
 data_raw <- data_raw %>% 
-rename(RegistryCode = ID)
+  rename(RegistryCode = ID)
 
 ## add "sub" (subject) to the RegistryCode (ID)
 data_raw$RegistryCode <- paste("sub", data_raw$RegistryCode)
    
 ## Create as well as calculate variable 'Weeks since Onset (WSO)'
 ### Define variables 'test' and 'onset' as dates
-data_raw$test <- as.Date(data_raw$test, format = "%d.%m.%y")
-data_raw$onset <- as.Date(data_raw$onset, format = "%d.%m.%y")
+data_raw$Test <- as.Date(data_raw$Test, format = "%d.%m.%y")
+data_raw$Onset <- as.Date(data_raw$Onset, format = "%d.%m.%y")
 
 ### Calculate 'WSO' and define variable as a numeric data type
-data_raw$WSO <- difftime(data_raw$test, data_raw$onset, units = "weeks")
+data_raw$WSO <- difftime(data_raw$Test, data_raw$Onset, units = "weeks")
 data_raw$WSO <- as.numeric(data_raw$WSO)
 
 ## remove NA trials (accuracy) --> participants were too slow to react on time or didn't react at all
 data_raw <- filter(data_raw, !(is.na(accuracy)))
+
+# remove RTs before picture was shown (equals rt = 0) and RTs below 100 ms
+data_raw <- data_raw[!(data_raw$response_time_absolute < data_raw$time_picture),]
+data_raw <- data_raw[!(data_raw$response_time < 100),]
 
 ## make numeric variable for accuracy
 data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_raw$accuracy == "incorrect", 0, NA))
@@ -47,17 +51,17 @@ data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_r
 # Create .csv-dataframe for accuracy (no distinction between conditions; SVR-LSM)
 ```{r}
 ## Create new data frame with relevant variables 
-data_acc <- data_raw[c('RegistryCode',
-                       'age',
+data_acc <- data_raw[c("sub", 'RegistryCode',
+                       'Age',
                        'WSO',
-                       'lesion_volume',
+                       'Lesion_volume',
                        'accuracy_num')]
 
 ## Calculate mean of accuracy for each participant
 df_acc_summary <- data_acc %>% 
   group_by(RegistryCode) %>% 
   mutate(average_accuracy = mean(accuracy_num)) %>% 
-  select(-accuracy_num) %>% 
+  dplyr::select(-accuracy_num) %>% 
   distinct()
 
 ## Extract data frame "data_acc.csv"
@@ -67,10 +71,10 @@ write.csv(df_acc_summary, here("./RData/data_acc.csv"), row.names = F)
 # Create .csv-dataframe for accuracy (condition; SVR-LSM)
 ```{r}
 ## Create new data frame with relevant variables 
-data_acc_cond_SVR <- data_raw[c('RegistryCode',
-                                'age',
+data_acc_cond_SVR <- data_raw[c("sub",'RegistryCode',
+                                'Age',
                                 'WSO',
-                                'lesion_volume',
+                                'Lesion_volume',
                                 'condition',
                                 'accuracy_num')]
 
@@ -78,7 +82,7 @@ data_acc_cond_SVR <- data_raw[c('RegistryCode',
 df_acc_cond_summary_SVR <- data_acc_cond_SVR %>% 
   group_by(RegistryCode, condition) %>% 
   mutate(average_accuracy = mean(accuracy_num)) %>% 
-  select(-accuracy_num) %>% 
+  dplyr::select(-accuracy_num) %>% 
   distinct()
 
 ## Bring it into wide-format
@@ -187,6 +191,45 @@ df_rt_cond_summary_NiiStat <- df_rt_cond_summary_NiiStat[c('RegistryCode',
 
 ## Extract data frame "data_rt_cond.xlsx"
 write_xlsx(df_rt_cond_summary_NiiStat, here("./RData/data_rt_cond.xlsx"))
+```
+
+# Create .csv-dataframe for response time (condition; SVR-LSM) - exclude 10 participants
+```{r}
+## remove incorrect trials from data frame
+data_rt_cond_SVR <- filter(data_raw, accuracy == "correct")
+
+## create data frame with relevant variables 
+data_rt_cond_SVR <- data_rt_cond_SVR[c("sub",
+                                       'RegistryCode',
+                                       'Age',
+                                       'WSO',
+                                       'Lesion_volume',
+                                       'condition',
+                                       'response_time')]
+
+
+## Calculate mean of response time for each participant
+df_rt_cond_summary_SVR <- data_rt_cond_SVR %>% 
+  group_by(RegistryCode, condition) %>% 
+  mutate(average_rt = mean(response_time)) %>% 
+  select(-response_time) %>% 
+  distinct()
+
+df_rt_cond_summary_SVR <- subset(df_rt_cond_summary_SVR, !sub %in% c("002","004","006","008","010","012","014","016","018","020"))
+
+## Bring it into wide-format
+df_rt_cond_summary_SVR <- df_rt_cond_summary_SVR %>% 
+  pivot_wider(names_from = condition, values_from = average_rt)
+
+## log-transform response time
+### WPM
+df_rt_cond_summary_SVR$WPM_log <- log(df_rt_cond_summary_SVR$WPM)
+
+### FPM
+df_rt_cond_summary_SVR$FPM_log <- log(df_rt_cond_summary_SVR$FPM)
+
+## Extract data frame "data_rt_cond"
+write.csv(df_rt_cond_summary_SVR, here("./RData/data_rt_cond_subsample.csv"), row.names = F)
 ```
 
 # Create .csv-dataframe for accuracy (congruency; SVR-LSM)
