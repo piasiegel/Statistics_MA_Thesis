@@ -55,7 +55,8 @@ std.error <- function(x, na.rm = TRUE){sd(x, na.rm = TRUE)/sqrt(length(x[!is.na(
 # Load data
 ```{r Load R data}
 # full df including demographic and npsy dara
-load(here::here("RData/all_files_01_2024.RData"))
+#load(here::here("RData/all_files_01_2024.RData"))
+load(here::here("RData/df_subsample_n41.RData"))
 ```
 
 ```{r Read in data, message=FALSE, include=FALSE, eval=FALSE}
