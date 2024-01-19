@@ -141,7 +141,7 @@ data_rt_cond_NiiStat <- data_rt_cond_NiiStat[c('RegistryCode',
                                                'condition',
                                                'response_time')]
 
-# NiiStat reads low scores as impairment, that's why we have to invert the RT-scores
+# NiiStat reads low scores as impairment -> invert RT-scores
 data_rt_cond_NiiStat$inverted_RT <- max(data_rt_cond_NiiStat$response_time) + 1 - data_rt_cond_NiiStat$response_time
 
 # log-transform response time
