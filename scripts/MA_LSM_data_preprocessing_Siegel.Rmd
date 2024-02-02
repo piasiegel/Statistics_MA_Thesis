@@ -4,8 +4,7 @@ author: "Siegel"
 date: "2023-11-14"
 output: html_document
 ---
-# Offizielles Skript
-  
+
 # Packages
 ```{r}
 # Load packages
@@ -18,7 +17,7 @@ library(fitdistrplus)
 
 # Load data
 ```{r}
-# Load already filtered data frame (Drop outs: 4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522 -> see R Markdown "dataframe for analysis")
+# Load already filtered data frame (Drop outs: 4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522 -> see R Markdown "data frame for analysis")
 load(here::here("./RData/df_subsample_n41.RData"))
 data_raw <- df_subsample
 ```
@@ -351,7 +350,7 @@ write_xlsx(df_acc_FPM_summary_NiiStat, here("./RData/data_acc_FPM.xlsx"))
 
 ### Create .xlsx-dataframe for accuracy (congruency - incongruent; NiiStat)
 ```{r}
-# create new data frame with relevant variables 
+# Create new data frame with relevant variables 
 df_acc_incongr_NiiStat <- data_raw[c('RegistryCode',
                                      'Age',
                                      'WSO',
