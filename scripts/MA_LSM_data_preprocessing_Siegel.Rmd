@@ -1,6 +1,6 @@
 ---
 title: "MA_LSM_data_preprocessing"
-author: "Siegel"
+author: "Pia Siegel"
 date: "2023-11-14"
 output: html_document
 ---
@@ -70,26 +70,26 @@ data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_r
 
 # Create data frames for analysis with SVR-LSM GUI
 ## Accuracy 
-### Create .csv-dataframe for accuracy (condition - WPM; SVR-LSM)
+### Create .csv-dataframe for accuracy (condition - WPM)
 ```{r}
 # Create new data frame with relevant variables 
-df_acc_WPM_SVR <- data_raw[c('RegistryCode',
-                             'Age',
-                             'WSO',
-                             'run',
-                             'Lesion_volume',
-                             'condition',
-                             'accuracy_num')]
+df_acc_WPM <- data_raw[c('RegistryCode',
+                         'Age',
+                         'WSO',
+                         'run',
+                         'Lesion_volume',
+                         'condition',
+                         'accuracy_num')]
 
 # Calculate mean of accuracy per run for each participant
-df_acc_WPM_summary_SVR <- df_acc_WPM_SVR %>% 
+df_acc_WPM_summary <- df_acc_WPM %>% 
   group_by(RegistryCode, condition, run) %>% 
   mutate(average_accuracy = mean(accuracy_num)) %>% 
   dplyr::select(-accuracy_num) %>% 
   distinct()
  
 # Define runs to exclude if participant performed at or below chance level in WPM trials
-df_acc_WPM_summary_SVR <- df_acc_WPM_summary_SVR %>% 
+df_acc_WPM_summary <- df_acc_WPM_summary %>% 
   group_by(RegistryCode, condition, run) %>% 
   pivot_wider(names_from = condition, values_from = average_accuracy) %>% 
   filter(WPM > 0.5) %>% 
@@ -99,29 +99,29 @@ df_acc_WPM_summary_SVR <- df_acc_WPM_summary_SVR %>%
   distinct()
 
 # Extract data frame "data_acc_WPM.csv"
-write.csv(df_acc_WPM_summary_SVR, here("./RData/data_acc_WPM.csv"), row.names = F)
+write.csv(df_acc_WPM_summary, here("./RData/data_acc_WPM.csv"), row.names = F)
 ```
 
-### Create .csv-dataframe for accuracy (condition - FPM; SVR-LSM)
+### Create .csv-dataframe for accuracy (condition - FPM)
 ```{r}
 # Create new data frame with relevant variables 
-df_acc_FPM_SVR <- data_raw[c('RegistryCode',
-                             'Age',
-                             'WSO',
-                             'run',
-                             'Lesion_volume',
-                             'condition',
-                             'accuracy_num')]
+df_acc_FPM <- data_raw[c('RegistryCode',
+                         'Age',
+                         'WSO',
+                         'run',
+                         'Lesion_volume',
+                         'condition',
+                         'accuracy_num')]
 
 # Calculate mean of accuracy per run for each participant
-df_acc_FPM_summary_SVR <- df_acc_FPM_SVR %>% 
+df_acc_FPM_summary <- df_acc_FPM %>% 
   group_by(RegistryCode, condition, run) %>% 
   mutate(average_accuracy = mean(accuracy_num)) %>% 
   dplyr::select(-accuracy_num) %>% 
   distinct()
  
 # Define runs to exclude if participant performed at or below chance level in FPM trials
-df_acc_FPM_summary_SVR <- df_acc_FPM_summary_SVR %>% 
+df_acc_FPM_summary <- df_acc_FPM_summary %>% 
   group_by(RegistryCode, condition, run) %>% 
   pivot_wider(names_from = condition, values_from = average_accuracy) %>% 
   filter(FPM > 0.5) %>% 
@@ -131,29 +131,29 @@ df_acc_FPM_summary_SVR <- df_acc_FPM_summary_SVR %>%
   distinct()
 
 # Extract data frame "data_acc_FPM.csv"
-write.csv(df_acc_FPM_summary_SVR, here("./RData/data_acc_FPM.csv"), row.names = F)
+write.csv(df_acc_FPM_summary, here("./RData/data_acc_FPM.csv"), row.names = F)
 ```
 
-### Create .csv-dataframe for accuracy (congruency - incongruent; SVR-LSM)
+### Create .csv-dataframe for accuracy (congruency - incongruent)
 ```{r}
 # Create new data frame with relevant variables 
-df_acc_incongr_SVR <- data_raw[c('RegistryCode',
-                                 'Age',
-                                 'WSO',
-                                 'run',
-                                 'Lesion_volume',
-                                 'congruency',
-                                 'accuracy_num')]
+df_acc_incongr <- data_raw[c('RegistryCode',
+                             'Age',
+                             'WSO',
+                             'run',
+                             'Lesion_volume',
+                             'congruency',
+                             'accuracy_num')]
 
 # Calculate mean of accuracy for each participant
-df_acc_incongr_summary_SVR <- df_acc_incongr_SVR %>% 
+df_acc_incongr_summary <- df_acc_incongr %>% 
   group_by(RegistryCode, congruency, run) %>% 
   mutate(average_accuracy = mean(accuracy_num)) %>% 
   dplyr::select(-accuracy_num) %>% 
   distinct()
 
 # Define runs to exclude if participant performed at or below chance level in incongruent trials
-df_acc_incongr_summary_SVR <- df_acc_incongr_summary_SVR %>% 
+df_acc_incongr_summary <- df_acc_incongr_summary %>% 
   group_by(RegistryCode, congruency, run) %>% 
   pivot_wider(names_from = congruency, values_from = average_accuracy) %>% 
   filter(incongruent > 0.5) %>% 
@@ -163,24 +163,24 @@ df_acc_incongr_summary_SVR <- df_acc_incongr_summary_SVR %>%
   distinct()
 
 # Extract data frame "data_acc_incongr"
-write.csv(df_acc_incongr_summary_SVR, here("./RData/data_acc_incongr.csv"), row.names = F)
+write.csv(df_acc_incongr_summary, here("./RData/data_acc_incongr.csv"), row.names = F)
 ```
 
 ## Reaction time
-### Create .csv-dataframe for reaction time (condition - WPM; SVR-LSM)
+### Create .csv-dataframe for reaction time (condition - WPM)
 ```{r}
 # Create data frame with relevant variables 
-df_rt_WPM_SVR <- data_raw[c('RegistryCode',
-                            'Age',
-                            'WSO',
-                            'run',
-                            'Lesion_volume',
-                            'condition',
-                            'accuracy_num',
-                            'response_time')]
+df_rt_WPM <- data_raw[c('RegistryCode',
+                        'Age',
+                        'WSO',
+                        'run',
+                        'Lesion_volume',
+                        'condition',
+                        'accuracy_num',
+                        'response_time')]
 
 # Only keep trials for WPM condition and exclude runs if participant performed at or below chance level
-df_acc_WPM_SVR <- df_rt_WPM_SVR %>% 
+df_acc_WPM <- df_rt_WPM %>% 
   filter(condition == "WPM") %>% 
   group_by(RegistryCode, run) %>%
   mutate(average_accuracy = mean(accuracy_num)) %>% 
@@ -189,10 +189,10 @@ df_acc_WPM_SVR <- df_rt_WPM_SVR %>%
   distinct()
 
 # Now use this df to filter rt df
-df_rt_WPM_SVR <- left_join(df_acc_WPM_SVR, df_rt_WPM_SVR, by = c("RegistryCode", "run"))
+df_rt_WPM <- left_join(df_acc_WPM, df_rt_WPM, by = c("RegistryCode", "run"))
 
 # Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
-df_rt_WPM_summary_SVR <- df_rt_WPM_SVR %>% 
+df_rt_WPM_summary <- df_rt_WPM %>% 
   filter(accuracy_num == 1) %>% # remove incorrect trials
   mutate(response_time_log = log(response_time)) %>% # log-transform rt
   dplyr::select(-c(response_time, accuracy_num)) %>% # drop unused columns
@@ -203,62 +203,62 @@ df_rt_WPM_summary_SVR <- df_rt_WPM_SVR %>%
   pivot_wider(names_from = condition, values_from = average_rt_log) # bring df into wide format 
 
 # Extract data frame "data_rt_WPM"
-write.csv(df_rt_WPM_summary_SVR, here("./RData/data_rt_WPM.csv"), row.names = F)
+write.csv(df_rt_WPM_summary, here("./RData/data_rt_WPM.csv"), row.names = F)
 ```
 
-### Create .csv-dataframe for reaction time (condition - FPM; SVR-LSM)
+### Create .csv-dataframe for reaction time (condition - FPM)
 ```{r}
 # Create data frame with relevant variables 
-df_rt_FPM_SVR <- data_raw[c('RegistryCode',
+df_rt_FPM <- data_raw[c('RegistryCode',
+                        'Age',
+                        'WSO',
+                        'run',
+                        'Lesion_volume',
+                        'condition',
+                        'accuracy_num',
+                        'response_time')]
+
+# Only keep trials for FPM condition and exclude runs if participant performed at or below chance level
+df_acc_FPM <- df_rt_FPM %>% 
+  filter(condition == "FPM") %>% 
+  group_by(RegistryCode, run) %>%
+  mutate(average_accuracy = mean(accuracy_num)) %>% 
+  filter(average_accuracy > 0.5) %>% 
+  dplyr::select(RegistryCode, run) %>% 
+  distinct()
+
+# Now use this df to filter rt df
+df_rt_FPM <- left_join(df_acc_FPM, df_rt_FPM, by = c("RegistryCode", "run"))
+
+# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
+df_rt_FPM_summary <- df_rt_FPM %>% 
+  filter(accuracy_num == 1) %>% # remove incorrect trials
+  mutate(response_time_log = log(response_time)) %>% # log-transform rt
+  dplyr::select(-c(response_time, accuracy_num)) %>% # drop unused columns
+  group_by(RegistryCode, condition) %>% 
+  mutate(average_rt_log = mean(response_time_log)) %>% # calculate average log-RT per condition
+  dplyr::select(-c(response_time_log, run)) %>% # drop unused columns
+  distinct() %>% 
+  pivot_wider(names_from = condition, values_from = average_rt_log) # bring df into wide format 
+
+# Extract data frame "data_rt_FPM"
+write.csv(df_rt_FPM_summary, here("./RData/data_rt_FPM.csv"), row.names = F)
+```
+
+### Create .csv-dataframe for reaction time (congruency - incongruent)
+```{r}
+# Create data frame with relevant variables 
+df_rt_incongr <- data_raw[c('RegistryCode',
                             'Age',
                             'WSO',
                             'run',
                             'Lesion_volume',
-                            'condition',
+                            'congruency',
                             'accuracy_num',
                             'response_time')]
 
-# Only keep trials for FPM condition and exclude runs if participant performed at or below chance level
-df_acc_FPM_SVR <- df_rt_FPM_SVR %>% 
-  filter(condition == "FPM") %>% 
-  group_by(RegistryCode, run) %>%
-  mutate(average_accuracy = mean(accuracy_num)) %>% 
-  filter(average_accuracy > 0.5) %>% 
-  dplyr::select(RegistryCode, run) %>% 
-  distinct()
-
-# Now use this df to filter rt df
-df_rt_FPM_SVR <- left_join(df_acc_FPM_SVR, df_rt_FPM_SVR, by = c("RegistryCode", "run"))
-
-# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
-df_rt_FPM_summary_SVR <- df_rt_FPM_SVR %>% 
-  filter(accuracy_num == 1) %>% # remove incorrect trials
-  mutate(response_time_log = log(response_time)) %>% # log-transform rt
-  dplyr::select(-c(response_time, accuracy_num)) %>% # drop unused columns
-  group_by(RegistryCode, condition) %>% 
-  mutate(average_rt_log = mean(response_time_log)) %>% # calculate average log-RT per condition
-  dplyr::select(-c(response_time_log, run)) %>% # drop unused columns
-  distinct() %>% 
-  pivot_wider(names_from = condition, values_from = average_rt_log) # bring df into wide format 
-
-# Extract data frame "data_rt_FPM"
-write.csv(df_rt_FPM_summary_SVR, here("./RData/data_rt_FPM.csv"), row.names = F)
-```
-
-### Create .csv-dataframe for reaction time (congruency - incongruent; SVR-LSM)
-```{r}
-# Create data frame with relevant variables 
-df_rt_incongr_SVR <- data_raw[c('RegistryCode',
-                                'Age',
-                                'WSO',
-                                'run',
-                                'Lesion_volume',
-                                'congruency',
-                                'accuracy_num',
-                                'response_time')]
-
 # Only keep incongruent trials and exclude runs if participant performed at or below chance level
-df_acc_incongr_SVR <- df_rt_incongr_SVR %>% 
+df_acc_incongr <- df_rt_incongr %>% 
   filter(congruency == "incongruent") %>% 
   group_by(RegistryCode, run) %>%
   mutate(average_accuracy = mean(accuracy_num)) %>% 
@@ -267,10 +267,10 @@ df_acc_incongr_SVR <- df_rt_incongr_SVR %>%
   distinct()
 
 # Now use this df to filter rt df
-df_rt_incongr_SVR <- left_join(df_acc_incongr_SVR, df_rt_incongr_SVR, by = c("RegistryCode", "run"))
+df_rt_incongr <- left_join(df_acc_incongr, df_rt_incongr, by = c("RegistryCode", "run"))
 
 # Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
-df_rt_incongr_summary_SVR <- df_rt_incongr_SVR %>% 
+df_rt_incongr_summary <- df_rt_incongr %>% 
   filter(accuracy_num == 1) %>% # remove incorrect trials
   mutate(response_time_log = log(response_time)) %>% # log-transform rt
   dplyr::select(-c(response_time, accuracy_num)) %>% # drop unused columns
@@ -281,227 +281,5 @@ df_rt_incongr_summary_SVR <- df_rt_incongr_SVR %>%
   pivot_wider(names_from = congruency, values_from = average_rt_log) # bring df into wide format 
 
 # Extract data frame "data_rt_incongr"
-write.csv(df_rt_incongr_summary_SVR, here("./RData/data_rt_incongr.csv"), row.names = F)
-```
-
-# Create data frames for analysis with NiiStat (no lesion volume included)
-## Accuracy
-### Create .xlsx-dataframe for accuracy (condition - WPM; NiiStat)
-```{r}
-# Create new data frame with relevant variables 
-df_acc_WPM_NiiStat <- data_raw[c('RegistryCode',
-                                 'Age',
-                                 'WSO',
-                                 'run',
-                                 'condition',
-                                 'accuracy_num')]
-
-# Calculate mean of accuracy per run for each participant
-df_acc_WPM_summary_NiiStat <- df_acc_WPM_NiiStat %>% 
-  group_by(RegistryCode, condition, run) %>% 
-  mutate(average_accuracy = mean(accuracy_num)) %>% 
-  dplyr::select(-accuracy_num) %>% 
-  distinct()
-
-# Define runs to exclude if participant performed at or below chance level in WPM trials
-df_acc_WPM_summary_NiiStat <- df_acc_WPM_summary_NiiStat %>% 
-  group_by(RegistryCode, condition, run) %>% 
-  pivot_wider(names_from = condition, values_from = average_accuracy) %>% 
-  filter(WPM > 0.5) %>% 
-  group_by(RegistryCode) %>% 
-  mutate(WPM = mean(WPM), FPM = mean(FPM)) %>% 
-  dplyr::select(-run) %>% 
-  distinct()
-
-# Extract data frame "data_acc_WPM.xlsx"
-write_xlsx(df_acc_WPM_summary_NiiStat, here("./RData/data_acc_WPM.xlsx"))
-```
-
-### Create .xlsx-dataframe for accuracy (condition - FPM; NiiStat)
-```{r}
-# Create new data frame with relevant variables 
-df_acc_FPM_NiiStat <- data_raw[c('RegistryCode',
-                                 'Age',
-                                 'WSO',
-                                 'run',
-                                 'condition',
-                                 'accuracy_num')]
-
-# Calculate mean of accuracy per run for each participant
-df_acc_FPM_summary_NiiStat <- df_acc_FPM_NiiStat %>% 
-  group_by(RegistryCode, condition, run) %>% 
-  mutate(average_accuracy = mean(accuracy_num)) %>% 
-  dplyr::select(-accuracy_num) %>% 
-  distinct()
- 
-# Define runs to exclude if participant performed at or below chance level in FPM trials
-df_acc_FPM_summary_NiiStat <- df_acc_FPM_summary_NiiStat %>% 
-  group_by(RegistryCode, condition, run) %>% 
-  pivot_wider(names_from = condition, values_from = average_accuracy) %>% 
-  filter(FPM > 0.5) %>% 
-  group_by(RegistryCode) %>% 
-  mutate(FPM = mean(FPM), WPM = mean(WPM)) %>% 
-  dplyr::select(-run) %>% 
-  distinct()
-
-# Extract data frame "data_acc_FPM.xlsx"
-write_xlsx(df_acc_FPM_summary_NiiStat, here("./RData/data_acc_FPM.xlsx"))
-```
-
-### Create .xlsx-dataframe for accuracy (congruency - incongruent; NiiStat)
-```{r}
-# Create new data frame with relevant variables 
-df_acc_incongr_NiiStat <- data_raw[c('RegistryCode',
-                                     'Age',
-                                     'WSO',
-                                     'run',
-                                     'congruency',
-                                     'accuracy_num')]
-
-# Calculate mean of accuracy for each participant
-df_acc_incongr_summary_NiiStat <- df_acc_incongr_NiiStat %>% 
-  group_by(RegistryCode, congruency, run) %>% 
-  mutate(average_accuracy = mean(accuracy_num)) %>% 
-  dplyr::select(-accuracy_num) %>% 
-  distinct()
-
-# Define runs to exclude if participant performed at or below chance level in incongruent trials
-df_acc_incongr_summary_NiiStat <- df_acc_incongr_summary_NiiStat %>% 
-  group_by(RegistryCode, congruency, run) %>% 
-  pivot_wider(names_from = congruency, values_from = average_accuracy) %>% 
-  filter(incongruent > 0.5) %>% 
-  group_by(RegistryCode) %>% 
-  mutate(incongruent = mean(incongruent), congruent = mean(congruent)) %>% 
-  dplyr::select(-run) %>% 
-  distinct()
-
-# Extract data frame "data_acc_incongr.xlsx"
-write_xlsx(df_acc_incongr_summary_NiiStat, here("./RData/data_acc_incongr.xlsx"))
-```
-
-## Reaction time
-### Create .xlsx-dataframe for reaction time (condition - WPM; NiiStat)
-```{r}
-# Create data frame with relevant variables 
-df_rt_WPM_NiiStat <- data_raw[c('RegistryCode',
-                                'Age',
-                                'WSO',
-                                'run',
-                                'condition',
-                                'accuracy_num',
-                                'response_time')]
-
-# Only keep trials for WPM condition and exclude runs if participant performed at or below chance level
-df_acc_WPM_NiiStat <- df_rt_WPM_NiiStat %>% 
-  filter(condition == "WPM") %>% 
-  group_by(RegistryCode, run) %>%
-  mutate(average_accuracy = mean(accuracy_num)) %>% 
-  filter(average_accuracy > 0.5) %>% 
-  dplyr::select(RegistryCode, run) %>% 
-  distinct()
-
-# Now use this df to filter rt df
-df_rt_WPM_NiiStat <- left_join(df_acc_WPM_NiiStat, df_rt_WPM_NiiStat, by = c("RegistryCode", "run"))
-
-# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
-df_rt_WPM_summary_NiiStat <- df_rt_WPM_NiiStat %>% 
-  filter(accuracy_num == 1) %>% # remove incorrect trials
-  mutate(response_time_log = log(response_time)) %>% # log-transform rt
-  dplyr::select(-c(response_time, accuracy_num)) %>% # drop unused columns
-  group_by(RegistryCode, condition) %>% 
-  mutate(average_rt_log = mean(response_time_log)) %>% # calculate average log-RT per condition
-  dplyr::select(-c(response_time_log, run)) %>% # drop unused columns
-  distinct() %>% 
-  pivot_wider(names_from = condition, values_from = average_rt_log) # bring df into wide format 
-
-# NiiStat reads low scores as impairment -> invert RT-scores
-df_rt_WPM_summary_NiiStat$WPM <- df_rt_WPM_summary_NiiStat$WPM * -1
-df_rt_WPM_summary_NiiStat$FPM <- df_rt_WPM_summary_NiiStat$FPM * -1
-
-# Extract data frame "data_rt_WPM"
-write_xlsx(df_rt_WPM_summary_NiiStat, here("./RData/data_rt_WPM.xlsx"))
-```
-
-### Create .xlsx-dataframe for reaction time (condition - FPM; NiiStat)
-```{r}
-# Create data frame with relevant variables 
-df_rt_FPM_NiiStat <- data_raw[c('RegistryCode',
-                                'Age',
-                                'WSO',
-                                'run',
-                                'condition',
-                                'accuracy_num',
-                                'response_time')]
-
-# Only keep trials for FPM condition and exclude runs if participant performed at or below chance level
-df_acc_FPM_NiiStat <- df_rt_FPM_NiiStat %>% 
-  filter(condition == "FPM") %>% 
-  group_by(RegistryCode, run) %>%
-  mutate(average_accuracy = mean(accuracy_num)) %>% 
-  filter(average_accuracy > 0.5) %>% 
-  dplyr::select(RegistryCode, run) %>% 
-  distinct()
-
-# Now use this df to filter rt df
-df_rt_FPM_NiiStat <- left_join(df_acc_FPM_NiiStat, df_rt_FPM_NiiStat, by = c("RegistryCode", "run"))
-
-# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
-df_rt_FPM_summary_NiiStat <- df_rt_FPM_NiiStat %>% 
-  filter(accuracy_num == 1) %>% # remove incorrect trials
-  mutate(response_time_log = log(response_time)) %>% # log-transform rt
-  dplyr::select(-c(response_time, accuracy_num)) %>% # drop unused columns
-  group_by(RegistryCode, condition) %>% 
-  mutate(average_rt_log = mean(response_time_log)) %>% # calculate average log-RT per condition
-  dplyr::select(-c(response_time_log, run)) %>% # drop unused columns
-  distinct() %>% 
-  pivot_wider(names_from = condition, values_from = average_rt_log) # bring df into wide format 
-
-# NiiStat reads low scores as impairment -> invert RT-scores
-df_rt_FPM_summary_NiiStat$WPM <- df_rt_FPM_summary_NiiStat$WPM * -1
-df_rt_FPM_summary_NiiStat$FPM <- df_rt_FPM_summary_NiiStat$FPM * -1
-
-# Extract data frame "data_rt_FPM"
-write_xlsx(df_rt_FPM_summary_NiiStat, here("./RData/data_rt_FPM.xlsx"))
-```
-
-### Create .xlsx-dataframe for reaction time (congruency - incongruent; NiiStat)
-```{r}
-# Create data frame with relevant variables 
-df_rt_incongr_NiiStat <- data_raw[c('RegistryCode',
-                                    'Age',
-                                    'WSO',
-                                    'run',
-                                    'congruency',
-                                    'accuracy_num',
-                                    'response_time')]
-
-# Only keep incongruent trials and exclude runs if participant performed at or below chance level
-df_acc_incongr_NiiStat <- df_rt_incongr_NiiStat %>% 
-  filter(congruency == "incongruent") %>% 
-  group_by(RegistryCode, run) %>%
-  mutate(average_accuracy = mean(accuracy_num)) %>% 
-  filter(average_accuracy > 0.5) %>% 
-  dplyr::select(RegistryCode, run) %>% 
-  distinct()
-
-# Now use this df to filter rt df
-df_rt_incongr_NiiStat <- left_join(df_acc_incongr_NiiStat, df_rt_incongr_NiiStat, by = c("RegistryCode", "run"))
-
-# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
-df_rt_incongr_summary_NiiStat <- df_rt_incongr_NiiStat %>% 
-  filter(accuracy_num == 1) %>% # remove incorrect trials
-  mutate(response_time_log = log(response_time)) %>% # log-transform rt
-  dplyr::select(-c(response_time, accuracy_num)) %>% # drop unused columns
-  group_by(RegistryCode, congruency) %>% 
-  mutate(average_rt_log = mean(response_time_log)) %>% # calculate average log-RT per condition
-  dplyr::select(-c(response_time_log, run)) %>% # drop unused columns
-  distinct() %>% 
-  pivot_wider(names_from = congruency, values_from = average_rt_log) # bring df into wide format 
-
-# NiiStat reads low scores as impairment -> invert RT-scores
-df_rt_incongr_summary_NiiStat$congruent <- df_rt_incongr_summary_NiiStat$congruent * -1
-df_rt_incongr_summary_NiiStat$incongruent <- df_rt_incongr_summary_NiiStat$incongruent * -1
-
-# Extract data frame "data_rt_incongr"
-write_xlsx(df_rt_incongr_summary_NiiStat, here("./RData/data_rt_incongr.xlsx"))
+write.csv(df_rt_incongr_summary, here("./RData/data_rt_incongr.csv"), row.names = F)
 ```
