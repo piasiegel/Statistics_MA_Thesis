@@ -1,6 +1,6 @@
 ---
 title: "Descriptive statistics - clinical assessment"
-author: "Siegel"
+author: "Pia Siegel"
 date: "2024-01-08"
 output: html_document
 ---
