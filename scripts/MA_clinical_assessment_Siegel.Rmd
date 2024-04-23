@@ -1,0 +1,170 @@
+---
+title: "MA_clinical_assessment_Siegel"
+author: "Siegel"
+date: "2024-01-08"
+output: html_document
+---
+
+# Packages
+```{r}
+# Load packages
+   library(here)  
+   library(tidyverse) 
+   library(writexl)
+   library(readxl)
+   library(dplyr)
+```
+
+# Load data
+```{r}
+# Load already filtered data frame (Drop outs: 4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522)
+load(here::here("./RData/df_subsample_n41.RData"))
+data_raw <- df_subsample
+```
+
+# Additional drop out
+```{r}
+# Remove participant with ID = 4227 due to lack of understanding of the task (ALWAYS pressed correct (accuracy - incorrect: 0.0000000; accuracy - correct: 1.0000000))
+data_raw <- data_raw[!data_raw$ID == 4227, ]
+```
+
+# Data cleaning and preparation of the data frame
+```{r}
+# Creating new data frame with relevant variables
+data_clinical <- data_raw[c('sub',
+                            'ID',
+                            'TokenTest_corr',
+                            'AAT_SV',
+                            'LEMO_V15',
+                            'Phasic_Alertness',
+                            'RT_GoNoGo_Median_ms',
+                            'Acc_GoNoGo',
+                            'Err_GoNoGo',
+                            'BOSU.NVST')]
+
+# Merging data from trial level to subject level
+data_clinical <- data_clinical %>%
+  group_by(ID) %>%
+  distinct()
+
+# Rename variables
+data_clinical$TT <- data_clinical$TokenTest_corr
+data_clinical$SV <- data_clinical$AAT_SV
+data_clinical$LEMO <- data_clinical$LEMO_V15
+data_clinical$NVST <- data_clinical$BOSU.NVST
+data_clinical$Phasic_A. <- data_clinical$Phasic_Alertness
+data_clinical$GNG_acc <- data_clinical$Acc_GoNoGo
+data_clinical$GNG_err <- data_clinical$Err_GoNoGo
+data_clinical$GNG_rt <- data_clinical$RT_GoNoGo_Median_ms
+
+# Remove old variables
+data_clinical <- subset(data_clinical, select = -c(TokenTest_corr, AAT_SV, LEMO_V15, Phasic_Alertness, RT_GoNoGo_Median_ms, Acc_GoNoGo, Err_GoNoGo, BOSU.NVST))
+```
+
+# Descriptive statistics
+```{r}
+# Mean, SD and range
+## AAT - Token Test
+### Remove NA trials
+data_clinical_TT <- filter(data_clinical, !(is.na(TT)))
+
+mean(data_clinical_TT$TT)
+sd(data_clinical_TT$TT)
+range(data_clinical_TT$TT)
+
+## AAT - language comprehension
+### Remove NA trials
+data_clinical_SV  <- filter(data_clinical, !(is.na(SV)))
+
+mean(data_clinical_SV$SV)
+sd(data_clinical_SV$SV)
+range(data_clinical_SV$SV)
+
+## LEMO
+### Remove NA trials
+data_clinical_LEMO <- filter(data_clinical, !(is.na(LEMO)))
+
+mean(data_clinical_LEMO$LEMO)
+sd(data_clinical_LEMO$LEMO)
+range(data_clinical_LEMO$LEMO)
+
+## NVST
+### Remove NA trials
+data_clinical_NVST <- filter(data_clinical, !(is.na(NVST)))
+
+mean(data_clinical_NVST$NVST)
+sd(data_clinical_NVST$NVST)
+range(data_clinical_NVST$NVST)
+
+## Phasic Alertness
+### Index
+data_clinical_alertness <- filter(data_clinical, !(is.na(Phasic_A.)))
+
+mean(data_clinical_alertness$Phasic_A.)
+sd(data_clinical_alertness$Phasic_A.)
+range(data_clinical_alertness$Phasic_A.)
+
+## Go/NoGo
+### RT (ms)
+#### Remove NA trials
+data_clinical_rt <- filter(data_clinical, !(is.na(GNG_rt)))
+
+mean(data_clinical_rt$GNG_rt)
+sd(data_clinical_rt$GNG_rt)
+range(data_clinical_rt$GNG_rt)
+
+### Accuracy
+#### Remove NA trials
+data_clinical_acc <- filter(data_clinical, !(is.na(GNG_acc)))
+
+mean(data_clinical_acc$GNG_acc)
+sd(data_clinical_acc$GNG_acc)
+range(data_clinical_acc$GNG_acc)
+
+### Error
+#### Remove NA trials
+data_clinical_err <- filter(data_clinical, !(is.na(GNG_err)))
+
+mean(data_clinical_err$GNG_err)
+sd(data_clinical_err$GNG_err)
+range(data_clinical_err$GNG_err)
+```
+
+# Analysis of RT (median) during subtest Alertness (TAP)
+```{r}
+# Due to missing median RT of Alertness in "df_subsample_n41", df with all variables regarding Alertness (unfiltered) is loaded 
+df_Alertness <- read.table(here::here("data/Uebersicht_Patienten_TAP.txt"), header = T, sep = "\t")
+
+# Extract only relevant variables
+df_Alertness <- df_Alertness[c('Patient',
+                               'ID',
+                               'RT_Alertness_woSignal_Median_ms',
+                               'RT_Alertness_wSignal_Median_ms')]
+
+# Remove drop outs
+df_Alertness <- df_Alertness[!(df_Alertness$ID %in% c(4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522, 4171, 2849, 3684, 4227, 4668)), ]   
+
+
+# Prepare df for analysis
+df_Alertness$RT_Alertness_woSignal_Median_ms <- as.numeric(df_Alertness$RT_Alertness_woSignal_Median_ms)
+df_Alertness$RT_Alertness_wSignal_Median_ms <- as.numeric(df_Alertness$RT_Alertness_wSignal_Median_ms)
+
+
+# Mean, SD and range
+## RT median with Signal
+### Remove NA trials
+df_Alertness_wS <- filter(df_Alertness, !(is.na(RT_Alertness_wSignal_Median_ms)))
+
+mean(df_Alertness_wS$RT_Alertness_wSignal_Median_ms)
+sd(df_Alertness_wS$RT_Alertness_wSignal_Median_ms)
+range(df_Alertness_wS$RT_Alertness_wSignal_Median_ms)
+
+
+## RT median without Signal
+### Remove NA trials
+df_Alertness_woS <- filter(df_Alertness, !(is.na(RT_Alertness_woSignal_Median_ms)))
+
+mean(df_Alertness_woS$RT_Alertness_woSignal_Median_ms)
+sd(df_Alertness_woS$RT_Alertness_woSignal_Median_ms)
+range(df_Alertness_woS$RT_Alertness_woSignal_Median_ms)
+```
