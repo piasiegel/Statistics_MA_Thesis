@@ -37,12 +37,12 @@ data_raw <- data_raw %>%
 # Add "sub" (subject) to the RegistryCode (ID)
 data_raw$RegistryCode <- paste("sub", data_raw$RegistryCode)
    
-## Create as well as calculate variable 'Weeks since Onset (WSO)'
-# Define variables 'test' and 'onset' as dates
+# Create as well as calculate variable 'Weeks since Onset (WSO)'
+## Define variables 'test' and 'onset' as dates
 data_raw$Test <- as.Date(data_raw$Test, format = "%d.%m.%y")
 data_raw$Onset <- as.Date(data_raw$Onset, format = "%d.%m.%y")
 
-# Calculate 'WSO' and define variable as a numeric data type
+## Calculate 'WSO' and define variable as a numeric data type
 data_raw$WSO <- difftime(data_raw$Test, data_raw$Onset, units = "weeks")
 data_raw$WSO <- as.numeric(data_raw$WSO)
 
@@ -68,9 +68,9 @@ data_raw <- data_raw[outlier_df$outlier == 0, ]
 data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_raw$accuracy == "incorrect", 0, NA))
 ```
 
-### Create data frames for analyses with SVR-LSM GUI
+# Create data frames for analyses with SVR-LSM GUI
 ## Accuracy 
-# Create .csv-dataframe for accuracy (condition - WPM)
+### Create .csv-dataframe for accuracy (condition - WPM)
 ```{r}
 # Create new data frame with relevant variables 
 df_acc_WPM <- data_raw[c('RegistryCode',
@@ -102,7 +102,7 @@ df_acc_WPM_summary <- df_acc_WPM_summary %>%
 write.csv(df_acc_WPM_summary, here("./RData/data_acc_WPM.csv"), row.names = F)
 ```
 
-# Create .csv-dataframe for accuracy (condition - FPM)
+### Create .csv-dataframe for accuracy (condition - FPM)
 ```{r}
 # Create new data frame with relevant variables 
 df_acc_FPM <- data_raw[c('RegistryCode',
@@ -134,7 +134,7 @@ df_acc_FPM_summary <- df_acc_FPM_summary %>%
 write.csv(df_acc_FPM_summary, here("./RData/data_acc_FPM.csv"), row.names = F)
 ```
 
-# Create .csv-dataframe for accuracy (congruency - incongruent)
+### Create .csv-dataframe for accuracy (congruency - incongruent)
 ```{r}
 # Create new data frame with relevant variables 
 df_acc_incongr <- data_raw[c('RegistryCode',
@@ -167,7 +167,7 @@ write.csv(df_acc_incongr_summary, here("./RData/data_acc_incongr.csv"), row.name
 ```
 
 ## Reaction time
-# Create .csv-dataframe for reaction time (condition - WPM)
+### Create .csv-dataframe for reaction time (condition - WPM)
 ```{r}
 # Create data frame with relevant variables 
 df_rt_WPM <- data_raw[c('RegistryCode',
@@ -206,7 +206,7 @@ df_rt_WPM_summary <- df_rt_WPM %>%
 write.csv(df_rt_WPM_summary, here("./RData/data_rt_WPM.csv"), row.names = F)
 ```
 
-# Create .csv-dataframe for reaction time (condition - FPM)
+### Create .csv-dataframe for reaction time (condition - FPM)
 ```{r}
 # Create data frame with relevant variables 
 df_rt_FPM <- data_raw[c('RegistryCode',
@@ -245,7 +245,7 @@ df_rt_FPM_summary <- df_rt_FPM %>%
 write.csv(df_rt_FPM_summary, here("./RData/data_rt_FPM.csv"), row.names = F)
 ```
 
-# Create .csv-dataframe for reaction time (congruency - incongruent)
+### Create .csv-dataframe for reaction time (congruency - incongruent)
 ```{r}
 # Create data frame with relevant variables 
 df_rt_incongr <- data_raw[c('RegistryCode',
