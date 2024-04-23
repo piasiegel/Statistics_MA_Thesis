@@ -9,10 +9,8 @@ output: html_document
 ```{r}
 # Load packages
 library(here)
-library(readxl)
 library(psych)
 library(tidyverse)
-library(openxlsx)
 library(lubridate)
 ```
 
