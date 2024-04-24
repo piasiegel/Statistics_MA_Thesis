@@ -1,0 +1,126 @@
+---
+title: "Descriptive statistics - demographics"
+author: "Pia Siegel"
+date: "2023-10-13"
+output: html_document
+---
+
+# Packages
+```{r}
+# Load packages
+library(here)
+library(psych)
+library(tidyverse)
+library(lubridate)
+```
+
+# Load data
+```{r}
+# Load already filtered data frame (Drop outs: 4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522)
+load(here::here("./RData/df_subsample_n41.RData"))
+data_raw <- df_subsample
+```
+
+# Additional drop out
+```{r}
+# Remove participant with ID = 4227 due to lack of understanding of the task (ALWAYS pressed correct (accuracy - incorrect: 0.0000000; accuracy - correct: 1.0000000))
+data_raw <- data_raw[!data_raw$ID == 4227, ]
+```
+
+# Data cleaning and preparation of the data frame
+```{r}
+# Creating new data frame with relevant variables
+MA_demo_data <- data_raw[c('sub',
+                           'ID',
+                           'Sex',
+                           'Onset',
+                           'Test',
+                           'Age',
+                           'Etiol',
+                           'Hemi',
+                           'Lesion_volume',
+                           'TokenTest_corr',
+                           'AAT_SV',
+                           'Aphasia',
+                           'Severity')]
+
+# Merging data from trial level to subject level
+df_demo_data <- MA_demo_data %>%
+  group_by(ID) %>%
+  distinct()
+
+# Create as well as calculate variable 'Weeks since Onset (WSO)'
+## Define variables 'test' and 'onset' as dates
+df_demo_data$test <- as.Date(df_demo_data$Test, format = "%d.%m.%y")
+df_demo_data$onset <- as.Date(df_demo_data$Onset, format = "%d.%m.%y")
+
+## Calculate 'WSO' and define variable as a numeric data type
+df_demo_data$WSO <- difftime(df_demo_data$test, df_demo_data$onset, units = "weeks")
+df_demo_data$WSO <- as.numeric(df_demo_data$WSO)
+
+## round to zero decimal places 
+df_demo_data$WSO <- round(df_demo_data$WSO, 0)
+```
+
+# Descriptive statistics - demographics
+```{r}
+# Mean and SD of age, lesion volume, WSO, TT and SV (AAT)
+## Age
+mean(df_demo_data$Age)
+sd(df_demo_data$Age)
+
+## Lesion volume
+mean(df_demo_data$Lesion_volume)
+sd(df_demo_data$Lesion_volume)
+
+## Weeks since Onset (WSO)
+mean(df_demo_data$WSO)
+sd(df_demo_data$WSO)
+
+## TT (AAT)
+### Remove NA trials
+df_demo_data_TT <- filter(df_demo_data, !(is.na(TokenTest_corr)))
+
+mean(df_demo_data_TT$TokenTest_corr)
+sd(df_demo_data_TT$TokenTest_corr)
+
+## SV (AAT)
+### Remove NA trials
+df_demo_data_SV <- filter(df_demo_data, !(is.na(AAT_SV)))
+
+mean(df_demo_data_SV$AAT_SV)
+sd(df_demo_data_SV$AAT_SV)
+
+# Range of age and WSO
+## Age
+range(df_demo_data$Age)
+
+## WSO
+range(df_demo_data$WSO)
+
+# Frequency table (absolute & relative)
+## Sex
+Freq_a_Sex <- table(df_demo_data$Sex)
+Freq_r_Sex <- round(prop.table (table(df_demo_data$Sex))*100,4)
+table_Sex <- cbind(Freq_a_Sex, Freq_r_Sex)
+
+## Aetiology
+Freq_a_Etiol <- table(df_demo_data$Etiol)
+Freq_r_Etiol <- round(prop.table (table(df_demo_data$Etiol))*100,4)
+table_Etiol <- cbind(Freq_a_Etiol, Freq_r_Etiol)
+
+## Hemisphere
+Freq_a_Hemi <- table(df_demo_data$Hemi)
+Freq_r_Hemi <- round(prop.table (table(df_demo_data$Hemi))*100,4)
+table_Hemi <- cbind(Freq_a_Hemi, Freq_r_Hemi)
+
+## Aphasia
+Freq_a_Aphasia <- table(df_demo_data$Aphasia)
+Freq_r_Aphasia <- round(prop.table (table(df_demo_data$Aphasia))*100,4)
+table_Aphasia <- cbind(Freq_a_Aphasia, Freq_r_Aphasia)
+
+## Severity
+Freq_a_Severity <- table(df_demo_data$Severity)
+Freq_r_Severity <- round(prop.table (table(df_demo_data$Severity))*100,4)
+table_Severity <- cbind(Freq_a_Severity, Freq_r_Severity)
+```
