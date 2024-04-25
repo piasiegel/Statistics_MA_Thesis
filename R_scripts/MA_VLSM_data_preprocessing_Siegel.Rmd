@@ -6,8 +6,7 @@ output: html_document
 ---
 
 # Packages
-```{r}
-# Load packages
+```{r Load packages}
 library(here)  
 library(tidyverse) 
 library(writexl)
@@ -16,9 +15,9 @@ library(fitdistrplus)
 ```
 
 # Load data
-```{r}
+```{r Load R data}
 # Load already filtered data frame (Drop outs: 4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522)
-load(here::here("./RData/df_subsample_n41.RData"))
+load(here::here("./R_data/df_subsample_n41.RData"))
 data_raw <- df_subsample
 ```
 
@@ -71,7 +70,7 @@ data_raw$accuracy_num <- ifelse(data_raw$accuracy == "correct", 1, ifelse(data_r
 # Create data frames for analyses with SVR-LSM GUI
 ## Accuracy 
 ### Create .csv-dataframe for accuracy (condition - WPM)
-```{r}
+```{r Accuracy - WPM}
 # Create new data frame with relevant variables 
 df_acc_WPM <- data_raw[c('RegistryCode',
                          'Age',
@@ -103,7 +102,7 @@ write.csv(df_acc_WPM_summary, here("./RData/data_acc_WPM.csv"), row.names = F)
 ```
 
 ### Create .csv-dataframe for accuracy (condition - FPM)
-```{r}
+```{r Accuracy - FPM}
 # Create new data frame with relevant variables 
 df_acc_FPM <- data_raw[c('RegistryCode',
                          'Age',
@@ -135,7 +134,7 @@ write.csv(df_acc_FPM_summary, here("./RData/data_acc_FPM.csv"), row.names = F)
 ```
 
 ### Create .csv-dataframe for accuracy (congruency - incongruent)
-```{r}
+```{r Accuracy - incongruent}
 # Create new data frame with relevant variables 
 df_acc_incongr <- data_raw[c('RegistryCode',
                              'Age',
@@ -168,7 +167,7 @@ write.csv(df_acc_incongr_summary, here("./RData/data_acc_incongr.csv"), row.name
 
 ## Reaction time
 ### Create .csv-dataframe for reaction time (condition - WPM)
-```{r}
+```{r Reaction time - WPM}
 # Create data frame with relevant variables 
 df_rt_WPM <- data_raw[c('RegistryCode',
                         'Age',
@@ -191,7 +190,7 @@ df_acc_WPM_rt <- df_rt_WPM %>%
 # Now use this df to filter rt df
 df_rt_WPM <- left_join(df_acc_WPM_rt, df_rt_WPM, by = c("RegistryCode", "run"))
 
-# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
+# Remove incorrect trials from data frame, then log-transform RT, and finally summarize mean RT per participant
 df_rt_WPM_summary <- df_rt_WPM %>% 
   filter(accuracy_num == 1) %>% # remove incorrect trials
   mutate(response_time_log = log(response_time)) %>% # log-transform rt
@@ -207,7 +206,7 @@ write.csv(df_rt_WPM_summary, here("./RData/data_rt_WPM.csv"), row.names = F)
 ```
 
 ### Create .csv-dataframe for reaction time (condition - FPM)
-```{r}
+```{r Reaction time - FPM}
 # Create data frame with relevant variables 
 df_rt_FPM <- data_raw[c('RegistryCode',
                         'Age',
@@ -230,7 +229,7 @@ df_acc_FPM_rt <- df_rt_FPM %>%
 # Now use this df to filter rt df
 df_rt_FPM <- left_join(df_acc_FPM_rt, df_rt_FPM, by = c("RegistryCode", "run"))
 
-# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
+# Remove incorrect trials from data frame, then log-transform RT, and finally summarize mean RT per participant
 df_rt_FPM_summary <- df_rt_FPM %>% 
   filter(accuracy_num == 1) %>% # remove incorrect trials
   mutate(response_time_log = log(response_time)) %>% # log-transform rt
@@ -246,7 +245,7 @@ write.csv(df_rt_FPM_summary, here("./RData/data_rt_FPM.csv"), row.names = F)
 ```
 
 ### Create .csv-dataframe for reaction time (congruency - incongruent)
-```{r}
+```{r Reaction time - incongruent}
 # Create data frame with relevant variables 
 df_rt_incongr <- data_raw[c('RegistryCode',
                             'Age',
@@ -269,7 +268,7 @@ df_acc_incongr_rt <- df_rt_incongr %>%
 # Now use this df to filter rt df
 df_rt_incongr <- left_join(df_acc_incongr_rt, df_rt_incongr, by = c("RegistryCode", "run"))
 
-# Remove incorrect trials from data frame, then log-transform RT, and finally summarise mean RT per participant
+# Remove incorrect trials from data frame, then log-transform RT, and finally summarize mean RT per participant
 df_rt_incongr_summary <- df_rt_incongr %>% 
   filter(accuracy_num == 1) %>% # remove incorrect trials
   mutate(response_time_log = log(response_time)) %>% # log-transform rt
