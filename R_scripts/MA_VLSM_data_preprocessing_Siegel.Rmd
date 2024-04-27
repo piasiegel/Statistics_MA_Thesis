@@ -98,7 +98,7 @@ df_acc_WPM_summary <- df_acc_WPM_summary %>%
   distinct()
 
 # Extract data frame "data_acc_WPM.csv"
-write.csv(df_acc_WPM_summary, here("./RData/data_acc_WPM.csv"), row.names = F)
+write.csv(df_acc_WPM_summary, here("./VLSM_data_csv/data_acc_WPM.csv"), row.names = F) 
 ```
 
 ### Create .csv-dataframe for accuracy (condition - FPM)
@@ -130,7 +130,7 @@ df_acc_FPM_summary <- df_acc_FPM_summary %>%
   distinct()
 
 # Extract data frame "data_acc_FPM.csv"
-write.csv(df_acc_FPM_summary, here("./RData/data_acc_FPM.csv"), row.names = F)
+write.csv(df_acc_FPM_summary, here("./VLSM_data_csv/data_acc_FPM.csv"), row.names = F)
 ```
 
 ### Create .csv-dataframe for accuracy (congruency - incongruent)
@@ -162,7 +162,7 @@ df_acc_incongr_summary <- df_acc_incongr_summary %>%
   distinct()
 
 # Extract data frame "data_acc_incongr"
-write.csv(df_acc_incongr_summary, here("./RData/data_acc_incongr.csv"), row.names = F)
+write.csv(df_acc_incongr_summary, here("./VLSM_data_csv/data_acc_incongr.csv"), row.names = F)
 ```
 
 ## Reaction time
@@ -202,7 +202,7 @@ df_rt_WPM_summary <- df_rt_WPM %>%
   pivot_wider(names_from = condition, values_from = average_rt_log) # bring df into wide format 
 
 # Extract data frame "data_rt_WPM"
-write.csv(df_rt_WPM_summary, here("./RData/data_rt_WPM.csv"), row.names = F)
+write.csv(df_rt_WPM_summary, here("./VLSM_data_csv/data_rt_WPM.csv"), row.names = F)
 ```
 
 ### Create .csv-dataframe for reaction time (condition - FPM)
@@ -241,7 +241,7 @@ df_rt_FPM_summary <- df_rt_FPM %>%
   pivot_wider(names_from = condition, values_from = average_rt_log) # bring df into wide format 
 
 # Extract data frame "data_rt_FPM"
-write.csv(df_rt_FPM_summary, here("./RData/data_rt_FPM.csv"), row.names = F)
+write.csv(df_rt_FPM_summary, here("./VLSM_data_csv/data_rt_FPM.csv"), row.names = F)
 ```
 
 ### Create .csv-dataframe for reaction time (congruency - incongruent)
@@ -280,5 +280,5 @@ df_rt_incongr_summary <- df_rt_incongr %>%
   pivot_wider(names_from = congruency, values_from = average_rt_log) # bring df into wide format 
 
 # Extract data frame "data_rt_incongr"
-write.csv(df_rt_incongr_summary, here("./RData/data_rt_incongr.csv"), row.names = F)
+write.csv(df_rt_incongr_summary, here("./VLSM_data_csv/data_rt_incongr.csv"), row.names = F)
 ```
