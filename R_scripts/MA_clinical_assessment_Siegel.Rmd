@@ -61,7 +61,7 @@ data_clinical <- subset(data_clinical, select = -c(TokenTest_corr, AAT_SV, LEMO_
 ```
 
 # Descriptive statistics
-```{r Mean, SD and range}
+```{r Mean SD and range}
 # AAT - Token Test
 ## Remove NA trials
 data_clinical_TT <- filter(data_clinical, !(is.na(TT)))
@@ -149,7 +149,7 @@ df_Alertness$RT_Alertness_woSignal_Median_ms <- as.numeric(df_Alertness$RT_Alert
 df_Alertness$RT_Alertness_wSignal_Median_ms <- as.numeric(df_Alertness$RT_Alertness_wSignal_Median_ms)
 ```
 
-```{r Mean, SD and range}
+```{r Mean SD and range}
 # Median RT with Signal
 ## Remove NA trials
 df_Alertness_wS <- filter(df_Alertness, !(is.na(RT_Alertness_wSignal_Median_ms)))
