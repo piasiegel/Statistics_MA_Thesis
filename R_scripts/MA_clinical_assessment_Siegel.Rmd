@@ -6,19 +6,18 @@ output: html_document
 ---
 
 # Packages
-```{r}
-# Load packages
-   library(here)  
-   library(tidyverse) 
-   library(writexl)
-   library(readxl)
-   library(dplyr)
+```{r Load packages}
+library(here)  
+library(tidyverse) 
+library(writexl)
+library(readxl)
+library(dplyr)
 ```
 
 # Load data
-```{r}
+```{r Load R data}
 # Load already filtered data frame (Drop outs: 4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522)
-load(here::here("./RData/df_subsample_n41.RData"))
+load(here::here("./R_data/df_subsample_n41.RData"))
 data_raw <- df_subsample
 ```
 
@@ -28,7 +27,7 @@ data_raw <- df_subsample
 data_raw <- data_raw[!data_raw$ID == 4227, ]
 ```
 
-# Data cleaning and preparation of the data frame
+# Data cleaning and preparing data frame
 ```{r}
 # Creating new data frame with relevant variables
 data_clinical <- data_raw[c('sub',
@@ -62,67 +61,67 @@ data_clinical <- subset(data_clinical, select = -c(TokenTest_corr, AAT_SV, LEMO_
 ```
 
 # Descriptive statistics
-```{r}
-# Mean, SD and range
-## AAT - Token Test
-### Remove NA trials
+```{r Mean, SD and range}
+# AAT - Token Test
+## Remove NA trials
 data_clinical_TT <- filter(data_clinical, !(is.na(TT)))
 
 mean(data_clinical_TT$TT)
 sd(data_clinical_TT$TT)
 range(data_clinical_TT$TT)
 
-## AAT - language comprehension
-### Remove NA trials
+# AAT - language comprehension
+## Remove NA trials
 data_clinical_SV  <- filter(data_clinical, !(is.na(SV)))
 
 mean(data_clinical_SV$SV)
 sd(data_clinical_SV$SV)
 range(data_clinical_SV$SV)
 
-## LEMO
-### Remove NA trials
+# LEMO
+## Remove NA trials
 data_clinical_LEMO <- filter(data_clinical, !(is.na(LEMO)))
 
 mean(data_clinical_LEMO$LEMO)
 sd(data_clinical_LEMO$LEMO)
 range(data_clinical_LEMO$LEMO)
 
-## NVST
-### Remove NA trials
+# NVST
+## Remove NA trials
 data_clinical_NVST <- filter(data_clinical, !(is.na(NVST)))
 
 mean(data_clinical_NVST$NVST)
 sd(data_clinical_NVST$NVST)
 range(data_clinical_NVST$NVST)
 
-## Phasic Alertness
-### Index
+# TAP - Alertness
+## Phasic alertness index
+### Remove NA trials
 data_clinical_alertness <- filter(data_clinical, !(is.na(Phasic_A.)))
 
 mean(data_clinical_alertness$Phasic_A.)
 sd(data_clinical_alertness$Phasic_A.)
 range(data_clinical_alertness$Phasic_A.)
 
-## Go/NoGo
-### RT (ms)
-#### Remove NA trials
+# TAP - Go/NoGo
+## RT (median; ms)
+### Remove NA trials
 data_clinical_rt <- filter(data_clinical, !(is.na(GNG_rt)))
 
 mean(data_clinical_rt$GNG_rt)
 sd(data_clinical_rt$GNG_rt)
 range(data_clinical_rt$GNG_rt)
 
-### Accuracy
-#### Remove NA trials
+## Accuracy
+### Remove NA trials
 data_clinical_acc <- filter(data_clinical, !(is.na(GNG_acc)))
 
 mean(data_clinical_acc$GNG_acc)
 sd(data_clinical_acc$GNG_acc)
 range(data_clinical_acc$GNG_acc)
 
-### Error
-#### Remove NA trials
+## Error
+### Remove NA trials
 data_clinical_err <- filter(data_clinical, !(is.na(GNG_err)))
 
 mean(data_clinical_err$GNG_err)
@@ -130,9 +129,9 @@ sd(data_clinical_err$GNG_err)
 range(data_clinical_err$GNG_err)
 ```
 
-# Analysis of RT (median) during subtest Alertness (TAP)
-```{r}
-# Due to missing median RT of Alertness in "df_subsample_n41", df with all variables regarding Alertness (unfiltered) is loaded 
+# Additional analyses of RT (median) - subtest Alertness (TAP)
+```{r Get data}
+# Due to the missing median RTs of Alertness in "df_subsample_n41", df is loaded with all variables regarding TAP (unfiltered)
 df_Alertness <- read.table(here::here("data/Uebersicht_Patienten_TAP.txt"), header = T, sep = "\t")
 
 # Extract only relevant variables
@@ -145,14 +144,14 @@ df_Alertness <- df_Alertness[c('Patient',
 df_Alertness <- df_Alertness[!(df_Alertness$ID %in% c(4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522, 4171, 2849, 3684, 4227, 4668)), ]   
 
 
-# Prepare df for analysis
+# Define variables as a numeric data type
 df_Alertness$RT_Alertness_woSignal_Median_ms <- as.numeric(df_Alertness$RT_Alertness_woSignal_Median_ms)
 df_Alertness$RT_Alertness_wSignal_Median_ms <- as.numeric(df_Alertness$RT_Alertness_wSignal_Median_ms)
+```
 
-
-# Mean, SD and range
-## RT median with Signal
-### Remove NA trials
+```{r Mean, SD and range}
+# Median RT with Signal
+## Remove NA trials
 df_Alertness_wS <- filter(df_Alertness, !(is.na(RT_Alertness_wSignal_Median_ms)))
 
 mean(df_Alertness_wS$RT_Alertness_wSignal_Median_ms)
@@ -160,8 +159,8 @@ sd(df_Alertness_wS$RT_Alertness_wSignal_Median_ms)
 range(df_Alertness_wS$RT_Alertness_wSignal_Median_ms)
 
 
-## RT median without Signal
-### Remove NA trials
+# Median RT without Signal
+## Remove NA trials
 df_Alertness_woS <- filter(df_Alertness, !(is.na(RT_Alertness_woSignal_Median_ms)))
 
 mean(df_Alertness_woS$RT_Alertness_woSignal_Median_ms)
