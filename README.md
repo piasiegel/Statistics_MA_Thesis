@@ -1,1 +1,1 @@
-# Statistics_MA_Thesis
+# Statistical analyses - Master thesis
