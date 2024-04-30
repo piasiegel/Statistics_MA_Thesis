@@ -132,13 +132,13 @@ range(data_clinical_err$GNG_err)
 # Additional analyses of RT (median) - subtest Alertness (TAP)
 ```{r Get data}
 # Due to the missing median RTs of Alertness in "df_subsample_n41", df is loaded with all variables regarding TAP (unfiltered)
-df_Alertness <- read.table(here::here("data/Uebersicht_Patienten_TAP.txt"), header = T, sep = "\t")
+df_TAP <- read.table(here::here("./Additional_data_clinical_assessment/Uebersicht_Patienten_TAP.txt"), header = T, sep = "\t")
 
 # Extract only relevant variables
-df_Alertness <- df_Alertness[c('Patient',
-                               'ID',
-                               'RT_Alertness_woSignal_Median_ms',
-                               'RT_Alertness_wSignal_Median_ms')]
+df_Alertness <- df_TAP[c('Patient',
+                         'ID',
+                         'RT_Alertness_woSignal_Median_ms',
+                         'RT_Alertness_wSignal_Median_ms')]
 
 # Remove drop outs
 df_Alertness <- df_Alertness[!(df_Alertness$ID %in% c(4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522, 4171, 2849, 3684, 4227, 4668)), ]   
