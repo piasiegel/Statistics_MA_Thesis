@@ -11,8 +11,8 @@ knitr::opts_chunk$set()
 options(scipen = 999)
 ```
 
-# Load packages
-```{r packages, message=FALSE, warning=TRUE}
+# Packages
+```{r Load packages}
 library(here)
 library(plyr)
 library(tidyverse)
@@ -49,9 +49,9 @@ std.error <- function(x, na.rm = TRUE){sd(x, na.rm = TRUE)/sqrt(length(x[!is.na(
 
 # Load, clean and prepare data frame
 ## Load data
-```{r}
+```{r Load R data}
 # Load already filtered data frame (Drop outs: 4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522)
-load(here::here("./RData/df_subsample_n41.RData"))
+load(here::here("./R_data/df_subsample_n41.RData"))
 ```
 
 ## Clean data
@@ -93,8 +93,8 @@ df_subsample$WSO <- difftime(df_subsample$Test, df_subsample$Onset, units = "wee
 df_subsample$WSO <- as.numeric(df_subsample$WSO)
 ```
 
-## Prepare df for accuracy analysis
-```{r}
+### Prepare df for accuracy
+```{r Df - accuracy}
 # Create new data frame with relevant variables 
 df_acc <- df_subsample[c('ID',
                          'run',
@@ -116,41 +116,42 @@ df_acc <- left_join(df_acc_summary, df_subsample, by = c("ID", "run"))
 df_acc <- subset(df_acc, select = -c(average_accuracy))
 ```
 
-## Prepare df for reaction time analysis
-```{r}
-# remove incorrect answers
+### Prepare df for reaction time
+```{r Df - Reaction time}
+# Remove incorrect answers
 df_RT <- df_acc[df_acc$accuracy != "incorrect", ]
 
 # Define variable "response time" as numeric
 df_RT$response_time <- as.numeric(df_RT$response_time)
 ```
 
-# Descriptive statistics - Plots
+# Descriptive statistics
 ## Accuracy
-```{r}
+```{r Descriptive - Accuracy}
 # Mean, median and SD of accuracy per condition and congruency
+## Create new data frame with relevant variables
 summary_acc_full <- df_acc[c('ID',
                              'condition',
                              'congruency',
                              'accuracy_num')]
 
-# Calculate mean of accuracy per condition and congruency
+## Calculate mean of accuracy per condition and congruency
 summary_acc_full <- summary_acc_full %>% 
   group_by(ID, condition, congruency) %>% 
   mutate(average_accuracy = mean(accuracy_num)) %>% 
   dplyr::select(-accuracy_num) %>% 
   distinct()
 
-# Calculate mean, median and SD
+## Calculate mean, median and SD
 summary_acc_full <- summary_acc_full %>% group_by(condition, congruency) %>%
   summarise(mean_acc = mean(average_accuracy, na.rm = TRUE), 
             md_acc = median(average_accuracy, na.rm = TRUE),
             SD_acc = sd(average_accuracy, na.rm = TRUE))
 
-# Relevel factors
+## Relevel factors
 df_acc$condition <- factor(df_acc$condition, levels = c("WPM", "FPM"))
 
-# Create summary df for accuracy
+## Create summary df for accuracy
 summary_acc <- df_acc %>% 
   group_by(sub, condition, congruency) %>% 
   summarise(n_trials = n(), n_corr = sum(accuracy == "correct", na.rm = T), prop = sum(accuracy == "correct", na.rm = T)/n())
@@ -168,12 +169,11 @@ Acc_cond <- ggplot(summary_acc, aes(x = condition, y = prop*100, fill = conditio
         legend.text=element_text(size=12),
         axis.title.x = element_blank()) + 
  facet_wrap(~ congruency)
- quartz(12,10,) # works only for macOS
 Acc_cond
 ```
 
 ## Reaction time 
-```{r}
+```{r - Descriptive - Reaction time}
 # Relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
 
@@ -198,7 +198,6 @@ RT_cond <- ggplot(df_RT, aes(x = condition, y = response_time, fill = condition)
         legend.text=element_text(size=12),
         axis.title.x = element_blank()) + 
   facet_wrap(~ congruency)
-  quartz(12,10,) # works only for macOS
 RT_cond
 ```
 
@@ -212,7 +211,7 @@ lattice::densityplot(log(df_RT$response_time))
 ```
 
 ### Model
-```{r RT - Model including baseline session}
+```{r RT - Model}
 # Relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
 df_RT$congruency <- factor(df_RT$congruency, levels = c("congruent", "incongruent"))
@@ -235,16 +234,16 @@ contrasts(df_RT$congruency) <- my.simple
 # ---- fit model ----
 m_RT <- lmer(log(response_time) ~ condition * congruency + run + lesion_volume + age + WSO + (1+ run + condition * congruency|sub) + (1|stimulus_audio) + (1|stimulus_picture), data = df_RT, REML = F, lmerControl(optimizer = "bobyqa"))
 
-# Check for convergence
+## Check for convergence
 check_convergence(m_RT)
 
-# Summary
+## Summary
 summary(m_RT)
 
-# LRT
+## Likelihood-ratio test
 m_RT_res <- drop1(m_RT, test = "Chisq")
 
-# Explore interaction
+## Explore direction of interaction
 emmeans::emmeans(m_RT, pairwise ~ congruency | condition, adjust = "holm", type = "response")
 
 # Obtain chi-square values for main effects
@@ -262,6 +261,7 @@ LRT_RT_congruency <- anova(m_RT_me, m_RT_congruency)
 LRT_RT_condition <- anova(m_RT_me, m_RT_condition)
 
 # Plot model results
+## Interaction
 RT_int <- plot(ggemmeans(m_RT, terms = c("condition", "congruency"))) +
   scale_colour_manual(values = palet_task) +
   ylab("Reaction time in ms") +
@@ -270,16 +270,15 @@ RT_int <- plot(ggemmeans(m_RT, terms = c("condition", "congruency"))) +
         legend.position = "bottom",
         legend.title = element_blank(),
         legend.text=element_text(size=10))
-  quartz(9,8,) # works only for macOS
 RT_int 
 
+## Main effect - run
 RT_run <- plot(ggemmeans(m_RT, terms = c("run"))) +
   ylab("Reaction time in ms") +
   xlab("Run") +
   apatheme +
    theme(legend.position = "none",
         legend.title = element_blank())
- quartz(9,8,) # works only for macOS
 RT_run
 
 # Create table output for model
@@ -291,7 +290,7 @@ tab_model(m_RT,
           transform = NULL,
           show.p = T,
           show.stat = T,
-          auto.label = F,)
+          auto.label = F)
 ```
 
 # Accuracy analysis
@@ -327,16 +326,16 @@ df_acc$correct <- as.factor(df_acc$correct)
 # ---- fit model ----
 m_acc <- glmer(correct ~ condition * congruency + run + age_z + Lesion_volume_z + WSO_z + (1 + run + condition + congruency|sub) + (1|stimulus_audio), data = df_acc, family = binomial(link = "logit"), glmerControl(optimizer = "bobyqa")) # model with interaction in random slopes is singular
 
-# Check for convergence
+## Check for convergence
 check_convergence(m_acc)
 
-# Summary
+## Summary
 summary(m_acc)
 
-# LRT
+## Likelihood-ratio test
 m_acc_res <- drop1(m_acc, test = "Chisq")
 
-# Explore direction of interaction
+## Explore direction of interaction
 emmeans::emmeans(m_acc, pairwise ~ congruency | condition, adjust = "holm", type = "response")
 
 # Obtain chi-square values for main effects
@@ -353,7 +352,8 @@ m_acc_condition <- glmer(correct ~ congruency + run + age_z + Lesion_volume_z + 
 LRT_acc_congruency <- anova(m_acc_me, m_acc_congruency)
 LRT_acc_condition <- anova(m_acc_me, m_acc_condition)
 
-# Plot model output
+# Plot model results
+## Interaction
 Acc_int <- plot(ggemmeans(m_acc, terms = c("condition", "congruency"))) +
   scale_colour_manual(values = palet_task) +
   coord_cartesian(ylim = c(0.5, 1)) +
@@ -363,7 +363,6 @@ Acc_int <- plot(ggemmeans(m_acc, terms = c("condition", "congruency"))) +
         legend.position = "bottom",
         legend.title = element_blank(),
         legend.text=element_text(size=10))
-  quartz(9,8,) # works only for macOS
 Acc_int
 
 # Create table output for model
