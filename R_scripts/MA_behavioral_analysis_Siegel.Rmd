@@ -29,19 +29,15 @@ library(performance)
 library(sjPlot)
 ```
 
+# Theme for plots
 ```{r Theme for plots, include=FALSE}
 apatheme <- theme_bw()+
   theme(plot.title = element_blank(), panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
         panel.border=element_blank(),axis.line=element_line(),
         text=element_text(family='sans',size=18)) #panel.grid.major=element_blank(),
 
-today <- Sys.Date()
-today <- format(today, format="%y%m%d")
-
 palet_task <- c("#BBBBBB","#994455")
 palet_task_cong <- c("#BBBBBB","#5D5D5D", "#994455", "#4d222b")
-
-output_path = here::here("Plots/")
 
 # creating a function for std.error
 std.error <- function(x, na.rm = TRUE){sd(x, na.rm = TRUE)/sqrt(length(x[!is.na(x)]))}
@@ -79,7 +75,7 @@ df_subsample <- df_subsample[outlier_df$outlier == 0, ]
 ```
 
 ## Prepare data frame 
-```{r Prepare data frame}
+```{r Prepare df}
 # Make numeric variable for accuracy
 df_subsample$accuracy_num <- ifelse(df_subsample$accuracy == "correct", 1, ifelse(df_subsample$accuracy == "incorrect", 0, NA))
 
