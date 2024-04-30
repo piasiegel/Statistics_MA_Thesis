@@ -173,7 +173,7 @@ Acc_cond
 ```
 
 ## Reaction time 
-```{r - Descriptive - Reaction time}
+```{r Descriptive - Reaction time}
 # Relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
 
@@ -211,7 +211,7 @@ lattice::densityplot(log(df_RT$response_time))
 ```
 
 ### Model
-```{r RT - Model}
+```{r Reaction time - Model}
 # Relevel factors
 df_RT$condition <- factor(df_RT$condition, levels = c("WPM", "FPM"))
 df_RT$congruency <- factor(df_RT$congruency, levels = c("congruent", "incongruent"))
