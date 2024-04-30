@@ -1,0 +1,154 @@
+---
+title: "Creation of the df_subsample_n41"
+author: "Sandra Martin"
+date: "2024-01-15"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+rm(list= ls()) # clear all 
+knitr::opts_chunk$set()
+options(scipen = 999)
+```
+
+# Load packages
+```{r packages, message=FALSE, warning=TRUE}
+library(here)
+library(plyr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(lme4)
+library(emmeans)
+library(ggeffects)
+library(stringr)
+library(fitdistrplus)
+library(see)
+library(cowplot)
+library(performance)
+library(sjPlot)
+```
+
+# Creation of the df_subsample_n41
+## Read in all data
+```{r Read in data, message=FALSE, include=FALSE, eval=FALSE}
+# There was a mix-up with the button assignments for the first 20 participants with even participant numbers (e.g., 002, 004, etc.). This needs to be fixed first since accuracy was assigned wrong in these participants. That's why we're first reading in the files of these 20 participants, change accuracy labels, then read in the other participants and finally merge both data frames. 
+# Read in data for files with errors
+path = here::here("Raw_data/subsample_even_participants_till20/")
+
+error_files <- ""
+seeds <- list.files(path = path, pattern = "MDN_APH_")
+
+for (i in 1:length(seeds)) {
+  filedir <- seeds[i]
+  seed <- read.table(paste0(path, "/", filedir), skip = 7, header = T, sep = "\t", na.strings = "NaN")
+  if ("correctness" %in% colnames(seed)) {
+  seed <- seed %>% 
+    dplyr::rename(congruency = correctness)
+  }
+  infos <- read.table(paste0(path, "/", filedir), fill = T)
+  seed$sub <- infos$V2[infos$V1 == "Subject:"]
+  seed$run <- infos$V2[infos$V1 == "Run:"]
+  seed$buttons <- infos$V2[infos$V1 == "Buttons:"]
+  error_files <- rbind(error_files, seed)
+}
+
+error_files <- error_files[-1,]     # delete first row of df since it's only NAs
+
+# Now switch accuracy information in this df: labelled "incorrect" was actually correct and labelled "correct" was actually incorrect 
+# --> reason for this mix-up was due to wrong button assignments: Presentation thought we were switching correct and incorrect buttons across participants when in fact we were not
+error_files <- error_files %>% 
+  mutate(accuracy_new = case_when(
+    congruency == "correct" & button_response == 2 ~ "correct",
+    congruency == "correct" & button_response == 1 ~ "incorrect",
+    congruency == "incorrect" & button_response == 2 ~ "incorrect",
+    congruency == "incorrect" & button_response == 1 ~ "correct",
+    NA ~ NA
+  ))
+
+error_files$accuracy <- error_files$accuracy_new
+error_files <- error_files %>% 
+  dplyr::select(-c("accuracy_new"))
+
+
+# Read in data
+path = here::here("Raw_data/")
+
+all_files <- ""
+seeds <- list.files(path = path, pattern = "MDN_APH_")
+
+for (i in 1:length(seeds)) {
+  filedir <- seeds[i]
+  seed <- read.table(paste0(path, "/", filedir), skip = 7, header = T, sep = "\t", na.strings = "NaN")
+  if ("correctness" %in% colnames(seed)) {
+  seed <- seed %>% 
+    dplyr::rename(congruency = correctness)
+  }
+  infos <- read.table(paste0(path, "/", filedir), fill = T)
+  seed$sub <- infos$V2[infos$V1 == "Subject:"]
+  seed$run <- infos$V2[infos$V1 == "Run:"]
+  seed$buttons <- infos$V2[infos$V1 == "Buttons:"]
+  all_files <- rbind(all_files, seed)
+}
+
+
+all_files <- all_files[-1,]     # delete first row of df since it's only NAs
+
+# Now merge all_files with error_files to have complete df
+all_files <- full_join(all_files, error_files)
+
+all_files$time_audio <- as.numeric(all_files$time_audio)
+all_files$length_audio <- as.numeric(all_files$length_audio)
+all_files$time_picture <- as.numeric(all_files$time_picture)
+all_files$response_time <- as.numeric(all_files$response_time)
+all_files <- dplyr::rename(all_files, 
+                    response_time_absolute = response_time,
+                    response_time = absolute_response_time)
+all_files$response_time_absolute <- as.numeric(all_files$response_time_absolute)
+all_files$response_time <- as.numeric(all_files$response_time)
+all_files$time_ISI <- as.numeric(all_files$time_ISI)
+all_files$sub <- str_pad(all_files$sub, 3, "left", "0")
+all_files$sub <- as.factor(all_files$sub)
+all_files$run <- as.factor(all_files$run)
+all_files$button_response <- as.factor(all_files$button_response)
+all_files$accuracy <- as.factor(all_files$accuracy)
+all_files$condition <- as.factor(all_files$condition)
+all_files$congruency[all_files$congruency == "correct"] <- "congruent"
+all_files$congruency[all_files$congruency == "incorrect"] <- "incongruent"
+all_files$congruency <- as.factor(all_files$congruency)
+all_files$category <- as.factor(all_files$category)
+all_files$buttons <- as.factor(all_files$buttons)
+all_files <- all_files[, c(18, 19, 10, 11, 1:9, 12:17, 20)]
+
+
+## Count NA values
+df_na <- all_files %>% 
+  group_by(sub, run, condition) %>% 
+  summarise(n_trials = n(), n_na = sum(is.na(response_time) == TRUE), prop = sum(is.na(response_time) == TRUE)/n())
+
+#---- read in demographic and neuropsychological data ----
+df_npsy <- read.table(here::here("Raw_data/Npsy_data_01_24.txt"), header = T, sep = "\t")
+df_npsy$sub <- str_pad(df_npsy$sub, width = 3, side = "left", pad = "0")
+
+#---- merge dfs ----
+all_files <- full_join(all_files, df_npsy)
+
+# Sort columns
+all_files <- all_files[,c(1,21:26,36:38,2:20,27:35,39:51)]
+
+# Save df
+save(all_files, file = here::here('R_data/all_files_01_2024.RData'))
+```
+
+# Remove drop outs (for analyses - MA)
+```{r df_subsample_n41}
+# Load full df including demographic and npsy dara
+load(here::here("R_data/all_files_01_2024.RData"))
+
+# Remove drop outs
+df_subsample <- all_files[!(all_files$ID %in% c(4002, 3364, 2884, 2998, 3392, 3960, 3154, 3994, 4086, 2522)), ] 
+
+# Save df
+save(df_subsample, file = here::here('R_data/df_subsample_n41.RData'))
+```
+
